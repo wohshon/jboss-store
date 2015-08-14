@@ -19,6 +19,7 @@ public class Cart implements Serializable{
 		for (CartItem item:items) {
 			System.out.println("-----------------"+item);
 			System.out.println("-----------------"+item.getLinePrice());
+			item.setLinePrice(item.getItemPrice()*item.getQty());
 			this.totalPrice=this.totalPrice.add(BigDecimal.valueOf(item.getLinePrice()));
 		}
 		

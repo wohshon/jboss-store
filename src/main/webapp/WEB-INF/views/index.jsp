@@ -117,7 +117,7 @@
 	                		</div>
 								<div>&nbsp;</div>
 	      						<div class="row" id="cartSummaryDisplay">
-	      						<div class="col-md-9"><label>Cart Total : </label><label> <fmt:formatNumber type="currency" value="${cart.totalPrice}"/></label></div>
+	      						<div class="col-md-9"><label>Cart Total : </label><label>&nbsp;<fmt:formatNumber type="currency" value="${cart.totalPrice}"/></label></div>
 	      						<div class="col-md-1"><a class="btn btn-primary" href="#" id="checkOutBtn">Check Out</a></div>
 	      						</div>          		
                 		</div>
