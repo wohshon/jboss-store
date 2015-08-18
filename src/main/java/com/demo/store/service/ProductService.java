@@ -57,5 +57,9 @@ public class ProductService implements DataService<Product> {
 //		/return dao.getAll();
 	}
 	
-
+	@Override
+	public List<Product> query(Object... param) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

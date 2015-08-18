@@ -3,6 +3,7 @@ package com.demo.store.entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class Cart implements Serializable{
@@ -25,6 +26,19 @@ public class Cart implements Serializable{
 		
 	}
 
+	public void removeItem(CartItem deleteItem) {
+		Iterator<CartItem> iterator=this.getItems().iterator();
+		while (iterator.hasNext()) {
+			CartItem item=iterator.next();
+			if (item.getItemId().equals(deleteItem.getItemId())) {
+				System.out.println("removed item "+item.getItemId());
+				iterator.remove();
+			}
+		}
+		System.out.println("Final size :"+this.getItems().size());
+		
+		
+	}
 	public void addItem(CartItem cartItem) {
 		boolean existing=false;
 		for (CartItem item:items) {

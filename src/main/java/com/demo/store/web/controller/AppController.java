@@ -1,17 +1,24 @@
 package com.demo.store.web.controller;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.HttpSessionRequiredException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 
@@ -19,6 +26,7 @@ import com.demo.store.entity.Cart;
 import com.demo.store.entity.CartItem;
 import com.demo.store.entity.Customer;
 import com.demo.store.entity.Order;
+import com.demo.store.entity.OrderItem;
 import com.demo.store.entity.Product;
 import com.demo.store.service.DataService;
 import com.google.gson.Gson;
@@ -31,6 +39,9 @@ public class AppController extends MultiActionController {
 	private DataService<Product> productService;
 	private DataService<Order> orderService;
 	private DataService<Customer> customerService;
+	public ModelAndView about(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+		return new ModelAndView("about");
+	}
 	public ModelAndView home(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 		System.out.println("Inside Controller****************home");
 		//create shopping cart
@@ -87,6 +98,117 @@ public class AppController extends MultiActionController {
 		response=gson.toJson(cart);
 		return response;
 	}
+
+	@RequestMapping(path="/checkOut", method=RequestMethod.POST)
+	@ResponseBody
+	public String checkOut(@RequestBody Customer customer , HttpSession session) {
+		String response=null;
+		System.out.print("custName " +customer.getName()+","+customer.getEmail());
+		customer.setCustomerId(customer.getEmail());
+		Gson gson=new Gson();
+		Order order=new Order();
+		//save customer
+		//customer=customerService.add(customer);
+/*		List<Customer> currentCustomer=customerService.query("BY_EMAIL",customer.getCustomerId());
+		if (currentCustomer.size()==1) {
+			
+			customer=currentCustomer.get(0);
+		} 
+*/		
+		order.setCustomer(customer);
+		//hack
+		order.setCustomerId(customer.getCustomerId());
+		order.setOrderDate(new Date());
+		order.setName("ORD_"+customer.getName());
+		Cart cart=(Cart)session.getAttribute("CART");
+		order.setTotalPrice(cart.getTotalPrice());
+		//save customer to session
+		session.setAttribute("CUST", customer);
+		Iterator<CartItem> cartItems=cart.getItems().iterator();
+		
+		while (cartItems.hasNext()) {
+			CartItem cartItem=cartItems.next();
+			OrderItem orderItem=new OrderItem();
+			orderItem.setName(cartItem.getItemName());
+			Product product=new Product();
+			product.setId(Long.valueOf(cartItem.getItemId()));
+			orderItem.setProduct(product);
+			orderItem.setQty(cartItem.getQty());
+			orderItem.setLineCost(BigDecimal.valueOf(cartItem.getLinePrice()));
+			orderItem.setOrder(order);
+			order.getItems().add(orderItem);
+			cartItems.remove();
+		}
+		orderService.add(order);
+		//clear cart items
+		//cart.setItems(new ArrayList<CartItem>());
+		cart.setTotalPrice(BigDecimal.ZERO);
+		session.setAttribute("CART", cart);
+		return gson.toJson(customer);
+	}
+
+	@RequestMapping(path="/deleteItem", method=RequestMethod.POST)
+	@ResponseBody
+	public String deleteItem(@RequestBody String prodId, HttpSession session) {
+		String response="";
+/*		System.out.println(cartItem);
+		//verify content
+		System.out.println(cartItem.getItemId());		
+		System.out.println(cartItem.getItemName());
+		System.out.println(cartItem.getQty());
+		System.out.println(cartItem.getItemPrice());
+		System.out.println(cartItem.getLinePrice());
+		cartItem.setLinePrice(cartItem.getItemPrice()*cartItem.getQty());
+*/		
+		
+		//response=itemId+"-"+qty;
+		
+		//get cart
+		Cart cart=(Cart)session.getAttribute("CART");
+		CartItem deleteItem=new CartItem();
+		deleteItem.setItemId(prodId);
+		cart.removeItem(deleteItem);
+		System.out.println("AppController deleted item... ");
+		System.out.println(cart.getItems().size());
+		cart.refresh();
+		System.out.println(cart.getItems().size());
+		Gson gson=new Gson();
+/*		
+		Product p=new Product();
+		p.setPrice(BigDecimal.valueOf(2000.50));
+		p.setName("Red Fedora Robot");
+		cartItem.setItem(p);
+		 */
+		//cartItem.setName(cartItem.getItemName());
+		//cartItem.setItemPrice(itemPrice);
+		session.setAttribute("CART", cart);
+		//response=gson.toJson(cartItem);
+		response=gson.toJson(cart);
+		return response;
+	}
+	
+	
+	public ModelAndView viewOrders(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+		ModelAndView mv=new ModelAndView("orders");
+		Customer cust=(Customer)session.getAttribute("CUST");
+		if (cust!=null) {
+			List<Order> orders=orderService.query("BYCUSTOMER",cust.getCustomerId());
+			System.out.println(orders.size());
+			request.setAttribute("ORDERS", orders);
+		}
+		else {
+			mv.addObject("msg", "Error retriving orders, please do a checkout first");
+
+		}
+		return mv;
+	}
+
+
+	@ExceptionHandler(HttpSessionRequiredException.class)
+	@ResponseStatus(value = HttpStatus.UNAUTHORIZED, reason="The session has expired")	
+	public String handleSessionExpired(){		
+	  return "sessionExpired";
+	}	
 	
 	public ModelAndView test(HttpServletRequest request, HttpServletResponse response) {
 		System.out.println("Inside Controller****************test:"+productService);
@@ -106,7 +228,7 @@ public class AppController extends MultiActionController {
 		cust.setName("dude");
 		cust.setEmail("dude@gmail.com");
 		cust.setCustomerId(cust.getEmail());
-		customerService.add(cust);
+		//customerService.add(cust);
 	
 		Order order=new Order();
 		order.setName("new order");

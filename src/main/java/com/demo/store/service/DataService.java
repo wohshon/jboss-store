@@ -14,6 +14,7 @@ public interface DataService<E extends AbstractGeneratedIdEntity> {
 	public E get(E entity);
 	public Object remove(E entity);
 	public EntityManager getEntityManager();
+	public List<E> query(Object... param);
 	
 	
 }

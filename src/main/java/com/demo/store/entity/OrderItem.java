@@ -2,6 +2,14 @@ package com.demo.store.entity;
 
 import java.math.BigDecimal;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+@Entity
+@Table(name="orderItems")
 public class OrderItem extends AbstractGeneratedIdEntity {
 
 	
@@ -10,14 +18,16 @@ public class OrderItem extends AbstractGeneratedIdEntity {
 	 * 
 	 */
 	private static final long serialVersionUID = -6155461947300181455L;
-
+	@OneToOne(cascade=CascadeType.MERGE)
 	private Product product;
+	@Column(name="qty")
 	private Integer qty;
+	@Column(name="lineCost")
 	private BigDecimal lineCost;
+	@OneToOne(cascade=CascadeType.ALL)
 	private Order order;
 	@Override
 	public Long getId() {
-		// TODO Auto-generated method stub
 		return id;
 	}
 

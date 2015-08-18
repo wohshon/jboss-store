@@ -34,43 +34,13 @@
 
 <body>
 
-    <!-- Navigation -->
-    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-        <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="#">Start Bootstrap</a>
-            </div>
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                    <li>
-                        <a href="#">About</a>
-                    </li>
-                    <li>
-                        <a href="#">Services</a>
-                    </li>
-                    <li>
-                        <a href="#">Contact</a>
-                    </li>
-                </ul>
-            </div>
-            <!-- /.navbar-collapse -->
-        </div>
-        <!-- /.container -->
-    </nav>
+<jsp:include page="nav.jsp"/>
 
     <!-- Page Content -->
     <div class="container">
 
         <div class="row">
-		<!-- cart area -->
+		<!-- cart lo -->
             <div class="col-md-4">
                 <p class="lead">Your Cart</p>
                 <c:set var="cart" value="${sessionScope.CART}"/>
@@ -126,21 +96,24 @@
 				            	
             	<div id="loginArea" class="col-md-10" style="display:none;">
             		<div><label>Enter Customer Information</label></div>
-            		<label for="custName">Name</label>
+            		<label>Name</label>
 					<div>
 						<input type="text" class="form-control" id="custName" placeholder="Enter Name"/>
 					</div>            	
-            		<label for="custName">Email</label>
+            		<label>Email (Customer Id)</label>
 					<div>
-						<input type="email" class="form-control" id="custName" placeholder="Enter Email"/>
+						<input type="email" class="form-control" id="custEmail" placeholder="Enter Email"/>
 					</div>
 					<div>&nbsp;</div>
 					<div><a class="btn btn-primary pull-left" href="#" id="submitCustBtn">Submit</a></div>            	
             	</div>
  			</div>
-		
+			<div id="infoArea" class="col-md-7" style="display:none;">
+				
+			</div>
+			
 		<!-- end cart area -->
-
+			
             <div class="col-md-8">
 
                 <div class="row carousel-holder">
@@ -378,7 +351,7 @@
 }
  */
 
- function CartItem(itemId, name, qty, price,linePrice)  {
+function CartItem(itemId, name, qty, price,linePrice)  {
 	 	 this.itemId=itemId;
 		 this.itemName=name;
 		 this.qty=qty;
@@ -386,6 +359,64 @@
 		 this.linePrice=linePrice;
  }
 
+ function Customer(name, email)  {
+ 	 this.name=name;
+	 this.email=email;
+}
+
+ 
+function removeCartItem(prodId) {
+	   $.ajax({
+		      type: "POST",
+		      //contentType : 'application/json; charset=utf-8',
+		      dataType : 'json',
+	 	      headers: { 
+		          'Accept': 'application/json',
+		          'Content-Type': 'application/json' 
+		      },	      
+		      url: "deleteItem.page",
+		      data: prodId, // Note it is important
+		      success :function(result) {
+			      //alert(result.items[0].itemName);
+			      var displayResult="";
+			      if (result.items.length==0) {
+			    	  $("#cartItemsDiv").html("Your Cart is Empty");
+				      $("#cartSummaryDisplay").html("");
+				  }
+			      for (i=0; i<result.items.length;i++) {
+				      //alert($("#cartDisplay").html());
+				      //displayResult+=result.items[i].itemName+"\n";
+				      displayResult+="<div class='row' id='cartItemsDisplay'> <div class='col-md-1' id='itemCount_"+(i+1)+"'>"+(i+1)+"</div>";
+				      displayResult+="<div class='col-md-3'>"+result.items[i].itemName+"</div>";	
+				      displayResult+="<div class='col-md-2'>$"+result.items[i].itemPrice+"</div>";
+				      displayResult+="<div class='col-md-1'>"+result.items[i].qty+"</div>";				
+				      displayResult+="<div class='col-md-2'>$"+result.items[i].linePrice+"</div>";				
+				      displayResult+="<div class='col-md-2'><a class='btn btn-sm' href='#' id='itemDeleteBtn_"+(i+1)+"'>Remove</a></div></div>";				
+				      $("#cartItemsDiv").html(displayResult);
+				  }
+				  //alert(displayResult);
+			      if (result.items.length>0) {
+					  
+				      displayResult="<div class='col-md-9'><label>Cart Total : $"+result.totalPrice+"</label></div>";
+				      displayResult+="<div class='col-md-1'><a class='btn btn-primary' href='#' id='checkOutBtn'>Check Out</a></div>";
+				      $("#cartSummaryDisplay").html(displayResult);
+			      }
+			      //readyFn();
+				  //alert(displayResult);
+			      //alert(result.itemId+" "+result.itemName+" "+result.qty+" "+result.itemPrice+" "+result.linePrice);
+			      //alert('success');
+			       //alert(Object.keys(result));
+			       //alert(result.qty);
+		     },
+		     error: function(err) {
+		    	 alert('fail '+err.status);
+		    	 alert(err.responseText);
+				alert(Object.keys(err));
+				
+			     }
+		  });	
+
+}
 function updateCart(cartItem) {
 	   $.ajax({
 	      type: "POST",
@@ -410,12 +441,18 @@ function updateCart(cartItem) {
 			      displayResult+="<div class='col-md-2'>$"+result.items[i].linePrice+"</div>";				
 			      displayResult+="<div class='col-md-2'><a class='btn btn-sm' href='#' id='itemDeleteBtn_"+(i+1)+"'>Remove</a></div></div>";				
 			      $("#cartItemsDiv").html(displayResult);
+			  		$( "#ItemDeleteBtn_"+(i+1) ).bind("click", function(e) {
+						  btnClick(e);
+						});
 			  }
 			  //alert(displayResult);
 		      displayResult="<div class='col-md-9'><label>Cart Total : $"+result.totalPrice+"</label></div>";
 		      displayResult+="<div class='col-md-1'><a class='btn btn-primary' href='#' id='checkOutBtn'>Check Out</a></div>";
 		      $("#cartSummaryDisplay").html(displayResult);
-		      readyFn();
+		  		$( "#checkOutBtn" ).bind("click", function(e) {
+				  btnClick(e);
+				});
+		      //readyFn();
 			  //alert(displayResult);
 		      //alert(result.itemId+" "+result.itemName+" "+result.qty+" "+result.itemPrice+" "+result.linePrice);
 		      //alert('success');
@@ -431,7 +468,36 @@ function updateCart(cartItem) {
 	  });
 }
 
+function checkOut(custName, custEmail) {
+
+		var cust=new Customer(custName, custEmail);
+		
+	   $.ajax({
+		      type: "POST",
+		      //contentType : 'application/json; charset=utf-8',
+		      dataType : 'json',
+	 	      headers: { 
+		          'Accept': 'application/json',
+		          'Content-Type': 'application/json' 
+		      },	      
+		      url: "checkOut.page",
+		      data: JSON.stringify(cust), // Note it is important
+		      success :function(result) {
+			      //alert('Checkout Successful, please click on Orders to view your purchase history');
+			      $('#infoArea').html('<label>Checkout Successful, please click on <a href="viewOrders.page">Orders</a> to view your purchase history</label>');
+			      $('#infoArea').show();
+		    	  $("#cartItemsDiv").html("Your Cart is Empty");
+			      $("#cartSummaryDisplay").html("");
+			      $('#loginArea').hide();
+		      },
+		      error: function(err) {
+			      alert('error');
+			  }
+	   });
+	
+}
 function btnClick(event){
+	$('#infoArea').hide();
 	var targetId=event.target.id;
 	//alert('clicked '+targetId);
 	var cartItem;
@@ -443,14 +509,26 @@ function btnClick(event){
 		cartItem=createCartItem(prodId);
 		updateCart(cartItem);	
 		
-	} else if (targetId.substring(0,8)=='checkOut') {
+	} 
+ 	else if (targetId.substring(0,10)=='itemDelete') {
+		//alert('delete item-'+targetId.substring(14)+'-');
+		removeCartItem(targetId.substring(14));
+	} 
+ 	else if (targetId.substring(0,8)=='checkOut') {
 		
 		$('#checkOutBtn').addClass('disabled');
 		$('[id^=itemDelete]').addClass('disabled');
 		
 		$('#loginArea').show();
 		
+		
 	}
+ 	else if (targetId.substring(0,13)=='submitCustBtn') {
+ 	 	//alert(targetId);
+		var custName=$('#custName').val();
+		var custEmail=$('#custEmail').val();
+		checkOut(custName, custEmail);
+ 	}
 	//alert(targetId.substring(targetId.length-1));
 /* 	if (targetId=='cartBtn_1') {
 		//alert($("#cartQty_1").val());

@@ -1,15 +1,21 @@
 package com.demo.store.entity;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name="orders")
@@ -25,11 +31,15 @@ public class Order extends AbstractGeneratedIdEntity {
 	private Date orderDate;
 	@Column(name="totalPrice")
 	private BigDecimal totalPrice;
-	@OneToOne
-	@JoinColumn(name="customer", referencedColumnName="email",updatable=false)
+	//TODO need to come back to fix this contraint thingy, using a hack of customerid now
+	//@ManyToOne(cascade=CascadeType.ALL)
+	//@JoinColumn(name="customer", referencedColumnName="email",updatable=false)
+	@Transient 
 	private Customer customer;
-	//@Transient
-	//private List<OrderItem> items;
+	@Column(name="customerId")
+	private String customerId;
+	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
+	private List<OrderItem> items=new ArrayList<OrderItem>();
 	@Override
 	public Long getId() {
 		// TODO Auto-generated method stub
@@ -53,13 +63,19 @@ public class Order extends AbstractGeneratedIdEntity {
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
-	/*public List<OrderItem> getItems() {
+	public List<OrderItem> getItems() {
 		return items;
 	}
 	public void setItems(List<OrderItem> items) {
 		this.items = items;
 	}
-	*/
+	public String getCustomerId() {
+		return customerId;
+	}
+	public void setCustomerId(String customerId) {
+		this.customerId = customerId;
+	}
+	
 	
 	
 	
