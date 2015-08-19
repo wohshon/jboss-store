@@ -392,15 +392,20 @@ function removeCartItem(prodId) {
 				      displayResult+="<div class='col-md-1'>"+result.items[i].qty+"</div>";				
 				      displayResult+="<div class='col-md-2'>$"+result.items[i].linePrice+"</div>";				
 				      displayResult+="<div class='col-md-2'><a class='btn btn-sm' href='#' id='itemDeleteBtn_"+(i+1)+"'>Remove</a></div></div>";				
-				      $("#cartItemsDiv").html(displayResult);
 				  }
-				  //alert(displayResult);
+			      $("#cartItemsDiv").html(displayResult);
+			      $('[id^=itemDelete]').bind("click", function(e) {
+					  btnClick(e);
+					});		      
+
 			      if (result.items.length>0) {
 					  
 				      displayResult="<div class='col-md-9'><label>Cart Total : $"+result.totalPrice+"</label></div>";
 				      displayResult+="<div class='col-md-1'><a class='btn btn-primary' href='#' id='checkOutBtn'>Check Out</a></div>";
 				      $("#cartSummaryDisplay").html(displayResult);
-			      }
+			      } else {
+			    	  $("#cartSummaryDisplay").html("You Cart is empty");
+				  }
 			      //readyFn();
 				  //alert(displayResult);
 			      //alert(result.itemId+" "+result.itemName+" "+result.qty+" "+result.itemPrice+" "+result.linePrice);
@@ -440,11 +445,11 @@ function updateCart(cartItem) {
 			      displayResult+="<div class='col-md-1'>"+result.items[i].qty+"</div>";				
 			      displayResult+="<div class='col-md-2'>$"+result.items[i].linePrice+"</div>";				
 			      displayResult+="<div class='col-md-2'><a class='btn btn-sm' href='#' id='itemDeleteBtn_"+(i+1)+"'>Remove</a></div></div>";				
-			      $("#cartItemsDiv").html(displayResult);
-			  		$( "#ItemDeleteBtn_"+(i+1) ).bind("click", function(e) {
-						  btnClick(e);
-						});
 			  }
+		      $("#cartItemsDiv").html(displayResult);
+		      $('[id^=itemDelete]').bind("click", function(e) {
+				  btnClick(e);
+				});		      
 			  //alert(displayResult);
 		      displayResult="<div class='col-md-9'><label>Cart Total : $"+result.totalPrice+"</label></div>";
 		      displayResult+="<div class='col-md-1'><a class='btn btn-primary' href='#' id='checkOutBtn'>Check Out</a></div>";
@@ -484,7 +489,7 @@ function checkOut(custName, custEmail) {
 		      data: JSON.stringify(cust), // Note it is important
 		      success :function(result) {
 			      //alert('Checkout Successful, please click on Orders to view your purchase history');
-			      $('#infoArea').html('<label>Checkout Successful, please click on <a href="viewOrders.page">Orders</a> to view your purchase history</label>');
+			      $('#infoArea').html('<label>Checkout Successful, please click on <a href="viewOrders.page">View Orders</a> to view your purchase history</label>');
 			      $('#infoArea').show();
 		    	  $("#cartItemsDiv").html("Your Cart is Empty");
 			      $("#cartSummaryDisplay").html("");

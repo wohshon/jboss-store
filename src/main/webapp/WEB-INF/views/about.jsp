@@ -32,7 +32,8 @@
 <jsp:include page="nav.jsp"/>
 <div class="container">
 	<div id="infoArea">
-		<h2>JBoss EAP Demo for OpenShift version 3 using xPaaS images </h2>
+		<h2>JBoss EAP Demo for OpenShift version 3 using JBoss xPaaS images and S2i</h2>
+		Installation instructions can be view <a href="https://github.com/wohshon">here</a>
 	</div>
 </div>
                 
