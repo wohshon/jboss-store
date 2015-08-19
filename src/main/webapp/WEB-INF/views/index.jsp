@@ -513,8 +513,12 @@ function btnClick(event){
 	if (targetId.substring(0,7)=='cartBtn') {
 		prodId=targetId.substring(targetId.length-1);
 		cartItem=createCartItem(prodId);
-		updateCart(cartItem);	
-		
+		if (cartItem.qty==null || cartItem.qty=='' ) {
+			alert('Please specify a number for product Qty');
+		}
+		else {
+			updateCart(cartItem);	
+		}	
 	} 
  	else if (targetId.substring(0,10)=='itemDelete') {
 		//alert('delete item-'+targetId.substring(14)+'-');
@@ -532,7 +536,12 @@ function btnClick(event){
  	 	//alert(targetId);
 		var custName=$('#custName').val();
 		var custEmail=$('#custEmail').val();
-		checkOut(custName, custEmail);
+		var validate=true;
+		if ((custName!=null && custName!='')  && (custEmail!='' && custEmail!=null)) {
+			checkOut(custName, custEmail);
+		} else {
+			alert('Please enter customer name and email');
+		}
  	}
 	//alert(targetId.substring(targetId.length-1));
 /* 	if (targetId=='cartBtn_1') {
@@ -549,8 +558,10 @@ function createCartItem(prodId) {
 	//$("#cartQty_1").val();
 	//$("#prodPrice_1").html();
 	//$("#prod_1").html();
+	
 	var pName=$("#prodName_"+prodId).html();
 	var pQty=$("#cartQty_"+prodId).val();
+	//alert(pQty);
 	var pPrice=$("#prodPrice_"+prodId).html();
 	var item=new CartItem(prodId,pName,pQty,pPrice,0);
 	//alert(item.name+" "+item.qty+" "+item.price);
