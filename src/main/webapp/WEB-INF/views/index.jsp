@@ -81,7 +81,7 @@
 	                				<div class="col-md-2"><fmt:formatNumber type="currency" value="${cartItem.itemPrice}"/></div>
 	                				<div class="col-md-1"><c:out value="${cartItem.qty}"/></div>
 	                				<div class="col-md-2"><fmt:formatNumber type="currency" value="${cartItem.linePrice}"/></div>
-	                				<div class="col-md-1" id="itemDelete_<c:out value='${itemCount}'/>"><a class="btn btn-sm" href="#" id="itemDeleteBtn_<c:out value='${itemCount}'/>">Remove</a></div>
+	                				<div class="col-md-1" id="itemDelete_<c:out value='${itemCount}'/>"><a class="btn btn-sm" href="#" id="itemDeleteBtn_<c:out value='${cartItem.itemId}'/>">Remove</a></div>
 	                			</div>
 	                		</c:forEach>
 	                		</div>
@@ -392,7 +392,7 @@ function removeCartItem(prodId) {
 				      displayResult+="<div class='col-md-2'>$"+result.items[i].itemPrice+"</div>";
 				      displayResult+="<div class='col-md-1'>"+result.items[i].qty+"</div>";				
 				      displayResult+="<div class='col-md-2'>$"+result.items[i].linePrice+"</div>";				
-				      displayResult+="<div class='col-md-2'><a class='btn btn-sm' href='#' id='itemDeleteBtn_"+(i+1)+"'>Remove</a></div></div>";				
+				      displayResult+="<div class='col-md-2'><a class='btn btn-sm' href='#' id='itemDeleteBtn_"+result.items[i].itemId+"'>Remove</a></div></div>";				
 				  }
 			      $("#cartItemsDiv").html(displayResult);
 			      $('[id^=itemDelete]').bind("click", function(e) {
@@ -445,7 +445,7 @@ function updateCart(cartItem) {
 			      displayResult+="<div class='col-md-2'>$"+result.items[i].itemPrice+"</div>";
 			      displayResult+="<div class='col-md-1'>"+result.items[i].qty+"</div>";				
 			      displayResult+="<div class='col-md-2'>$"+result.items[i].linePrice+"</div>";				
-			      displayResult+="<div class='col-md-2'><a class='btn btn-sm' href='#' id='itemDeleteBtn_"+(i+1)+"'>Remove</a></div></div>";				
+			      displayResult+="<div class='col-md-2'><a class='btn btn-sm' href='#' id='itemDeleteBtn_"+result.items[i].itemId+"'>Remove</a></div></div>";				
 			  }
 		      $("#cartItemsDiv").html(displayResult);
 		      $('[id^=itemDelete]').bind("click", function(e) {
