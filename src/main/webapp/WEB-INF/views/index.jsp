@@ -105,8 +105,9 @@
 						<input type="email" class="form-control" id="custEmail" placeholder="Enter Email"/>
 					</div>
 					<div>&nbsp;</div>
-					<div><a class="btn btn-primary pull-left" href="#" id="submitCustBtn">Submit</a></div>            	
-            	</div>
+					<!-- pull-left interfered with mobile browser click event -->
+					<div><a class="btn btn-primary" href="#" id="submitCustBtn">Submit</a></div>            	
+ 				</div>
  			</div>
 			<div id="infoArea" class="col-md-7" style="display:none;">
 				
@@ -526,7 +527,6 @@ function btnClick(event){
 		
 		$('#loginArea').show();
 		
-		
 	}
  	else if (targetId.substring(0,13)=='submitCustBtn') {
  	 	//alert(targetId);
@@ -557,8 +557,9 @@ function createCartItem(prodId) {
 	return item;
 	
 }
-
+	
 function readyFn( jQuery ) {
+	    
 	$( ".btn" ).bind("click", function(e) {
 		  btnClick(e);
 		}); 
