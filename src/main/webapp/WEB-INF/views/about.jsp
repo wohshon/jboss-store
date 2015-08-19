@@ -33,7 +33,7 @@
 <div class="container">
 	<div id="infoArea">
 		<h2>JBoss EAP Demo for OpenShift version 3 using JBoss xPaaS images and S2i</h2>
-		Installation instructions can be view <a href="https://github.com/wohshon">here</a>
+		Installation instructions available <a href="https://github.com/wohshon/jboss-store">here</a>
 	</div>
 </div>
                 
