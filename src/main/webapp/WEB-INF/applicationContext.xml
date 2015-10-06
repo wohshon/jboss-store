@@ -44,9 +44,7 @@
  
  -->	
  
- <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
- 	<property name="entityManagerFactory" ref="entityManagerFactory" />
- </bean>
+	<bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager"/>
  	<tx:annotation-driven transaction-manager="transactionManager" />		
 <!--
  	<jee:jndi-lookup id="dataSource" jndi-name="java:jboss/datasources/storeDS"/>
