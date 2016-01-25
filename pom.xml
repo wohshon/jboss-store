@@ -35,6 +35,8 @@
     </licenses>
 
     <properties>
+       	<infinispan.version>6.3.1.Final-redhat-1</infinispan.version>
+    
         <!-- Explicitly declaring the source encoding eliminates the following 
             message: -->
         <!-- [WARNING] Using platform encoding (UTF-8 actually) to copy filtered 
@@ -87,12 +89,40 @@
 
     <dependencies>
 		<!-- custom dependencies -->
-<dependency>
+
+	<dependency>
+		<groupId>org.infinispan</groupId>
+		<artifactId>infinispan-embedded-query</artifactId>
+		<version>${infinispan.version}</version>
+		<scope>provided</scope>
+		<!--  because already loaded the module  -->
+	</dependency>
+
+	<dependency>
+    	<groupId>org.infinispan</groupId>
+    	<artifactId>infinispan-cdi</artifactId>
+    	<version>${infinispan.version}</version>
+	</dependency>
+	        <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-jcache</artifactId>
+    	<version>${infinispan.version}</version>
+        </dependency>
+
+
+<!-- <dependency>
 	<groupId>javax.servlet.jsp.jstl</groupId>
 	<artifactId>javax.servlet.jsp.jstl-api</artifactId>
 	<version>1.2.1</version>
+
+</dependency> -->
+
+<dependency>
+	<groupId>javax.servlet</groupId>
+	<artifactId>jstl</artifactId>
+	<version>1.2</version>
 </dependency>
-		
+
 <dependency>
 	<groupId>org.springframework</groupId>
 	<artifactId>spring-tx</artifactId>
