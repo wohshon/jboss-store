@@ -21,7 +21,7 @@ Advisable to update the imagestreams and templates to the latest ones even if yo
   oc create -f application-templates/jboss-image-streams.json -n openshift
   ```
   
-#### 1.2 Create eap6-mysql-sti template
+#### STEP NOT REQUIRED ANY MORE1.2 Create eap6-mysql-sti template
   Open up the file application-templates/templates/eap/eap6-mysql-sti.json, ensure the "type" attribute
   for github are all in small caps
   (The original value is 'Github' which will cause an error during deployment) 
