@@ -21,7 +21,9 @@ Advisable to update the imagestreams and templates to the latest ones even if yo
   oc create -f application-templates/jboss-image-streams.json -n openshift
   ```
   
-#### STEP NOT REQUIRED ANY MORE1.2 Create eap6-mysql-sti template
+~~#### STEP NOT REQUIRED ANY MORE
+
+1.2 Create eap6-mysql-sti template
   Open up the file application-templates/templates/eap/eap6-mysql-sti.json, ensure the "type" attribute
   for github are all in small caps
   (The original value is 'Github' which will cause an error during deployment) 
@@ -41,7 +43,7 @@ Advisable to update the imagestreams and templates to the latest ones even if yo
   ```
   oc create -f application-templates/templates/eap/eap6-mysql-sti.json -n openshift
   ```
-
+~~
 ### 2. Creating the Project
 - As a **normal user**, 
 ```
@@ -81,8 +83,8 @@ oc logs -f <eap pod name>
 Once the eap instance is up, access the deom at 
 http://&lt;app-name&gt;.&lt;your domain&gt;
 
-### 3. Others
- HTTPS endpoint does not work in this version of the demo.
+~~### 3. Others
+ HTTPS endpoint does not work in this version of the demo.~~
  
 
 
