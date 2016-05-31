@@ -30,13 +30,13 @@ Advisable to update the imagestreams and templates to the latest ones even if yo
   
   ~~The correct value should look like:~~
   ```
-                  ~~"triggers": [
+                  "triggers": [
                       {
                           "type": "github",
                           "github": {
                               "secret": "${GITHUB_TRIGGER_SECRET}"
                           }
-                      },~~
+                      },
   ```
   
   ~~As a **system:admin**~~
