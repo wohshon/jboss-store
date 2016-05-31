@@ -21,29 +21,29 @@ Advisable to update the imagestreams and templates to the latest ones even if yo
   oc create -f application-templates/jboss-image-streams.json -n openshift
   ```
   
-~~#### STEP NOT REQUIRED ANY MORE
+~~#### STEP NOT REQUIRED ANY MORE~~
 
-1.2 Create eap6-mysql-sti template
-  Open up the file application-templates/templates/eap/eap6-mysql-sti.json, ensure the "type" attribute
+~~1.2 Create eap6-mysql-sti template~~
+~~Open up the file application-templates/templates/eap/eap6-mysql-sti.json, ensure the "type" attribute
   for github are all in small caps
-  (The original value is 'Github' which will cause an error during deployment) 
+  (The original value is 'Github' which will cause an error during deployment)~~
   
-  The correct value should look like:
+  ~~The correct value should look like:~~
   ```
-                  "triggers": [
+                  ~~"triggers": [
                       {
                           "type": "github",
                           "github": {
                               "secret": "${GITHUB_TRIGGER_SECRET}"
                           }
-                      },
+                      },~~
   ```
   
-  As a **system:admin** 
+  ~~As a **system:admin**~~
   ```
-  oc create -f application-templates/templates/eap/eap6-mysql-sti.json -n openshift
+  ~~oc create -f application-templates/templates/eap/eap6-mysql-sti.json -n openshift~~
   ```
-~~
+
 ### 2. Creating the Project
 - As a **normal user**, 
 ```
