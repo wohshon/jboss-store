@@ -180,7 +180,10 @@
             JBoss EAP 6 -->
         <dependency>
             <groupId>org.hibernate.javax.persistence</groupId>
-            <artifactId>hibernate-jpa-2.0-api</artifactId>
+            <!-- <artifactId>hibernate-jpa-2.0-api</artifactId>
+            EAP 7  - 2.1
+             -->
+           <artifactId>hibernate-jpa-2.0-api</artifactId>            
             <scope>provided</scope>
         </dependency>
 
