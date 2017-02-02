@@ -15,44 +15,40 @@
         http://www.springframework.org/schema/tx/spring-tx.xsd">
 
 
-		<context:component-scan base-package="com.demo.store.dao" />
-		<context:annotation-config/>		 
-		<bean id="entityManagerFactory"
+	<context:component-scan base-package="com.demo.store" />
+	<context:annotation-config/>		 
+	<bean id="entityManagerFactory"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-			<property name="persistenceUnitName" value="store" />
-			
-			<property name="jtaDataSource" ref="dataSource" />
-      		<property name="packagesToScan" value="com.demo.store.entity" />
-		      <property name="jpaVendorAdapter">
-		         <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
-		      </property>
-		      
-		      <property name="jpaProperties">
-		         <props>
-		            <prop key="hibernate.hbm2ddl.auto">create-drop</prop>
-		            <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
-		     		<prop key="hibernate.transaction.jta.platform">org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform</prop>
-		     		<prop key="hibernate.show_sql">true</prop>
-		     		
-		     		<prop key="hibernate.hbm2ddl.import_files">META-INF/import.sql</prop>
-		     		
-		         </props>
-		      </property>			
-		</bean>
-<!-- 		
-	<bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager"/>
- 
- -->	
- 
+		<property name="persistenceUnitName" value="store" />		
+		<property name="jtaDataSource" ref="dataSource" />
+		<property name="persistenceXmlLocation" value="classpath*:META-INF/persistence.xml"/>
+		 <property name="jpaVendorAdapter">
+		 	<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+		 </property>
+	</bean>
+<!-- for EAP 7-->
+<!-- 	<bean id="entityManagerFactory"
+	class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="persistenceUnitName" value="store" />
+		<property name="jtaDataSource" ref="dataSource" />
+	  		<property name="packagesToScan" value="com.demo.store.entity" />
+		 <property name="jpaVendorAdapter">
+		 	<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+		 </property>
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.hbm2ddl.auto">create-drop</prop>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+				<prop key="hibernate.transaction.jta.platform">org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.import_files">META-INF/import.sql</prop>
+			</props>
+		</property>
+	</bean>
+ -->
 	<bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager"/>
  	<tx:annotation-driven transaction-manager="transactionManager" />		
-<!--
  	<jee:jndi-lookup id="dataSource" jndi-name="java:jboss/datasources/storeDS"/>
--->
- 	<jee:jndi-lookup id="dataSource" jndi-name="java:jboss/datasources/storeDS"/>
- 	
-
- 	
  	<bean id="dataService" class="com.demo.store.service.DataService" abstract="true"/>
  	<bean id="productService" class="com.demo.store.service.ProductService" parent="dataService">
  	</bean>
