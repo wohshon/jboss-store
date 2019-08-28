@@ -1,4 +1,14 @@
 # jboss-store
+
+## Updated for OCP 4.1 EAP 7.2
+
+TL;DR 
+
+```
+oc new-app eap72-mysql-s2i --name=jboss-store -p SOURCE_REPOSITORY_URL=https://github.com/wohshon/jboss-store -p SOURCE_REPOSITORY_REF=master -p DB_JNDI=java:jboss/datasources/storeDS -p CONTEXT_DIR=''
+```
+
+
 ## EAP 6 and MySQL demo deployable on OpenShift v3 via S2i build
 
 A shopping cart demo that showcase EAP 6 and MySQL images on OpenShift v3.  
