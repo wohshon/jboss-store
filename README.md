@@ -5,7 +5,11 @@
 TL;DR 
 
 ```
-oc new-app eap72-mysql-s2i --name=jboss-store -p SOURCE_REPOSITORY_URL=https://github.com/wohshon/jboss-store -p SOURCE_REPOSITORY_REF=master -p DB_JNDI=java:jboss/datasources/storeDS -p CONTEXT_DIR=''
+# oc new-project eap
+
+# oc create -f https://raw.githubusercontent.com/jboss-openshift/application-templates/master/secrets/eap7-app-secret.json
+
+# oc new-app eap72-mysql-s2i --name=jboss-store -p SOURCE_REPOSITORY_URL=https://github.com/wohshon/jboss-store -p SOURCE_REPOSITORY_REF=master -p DB_JNDI=java:jboss/datasources/storeDS -p CONTEXT_DIR=''
 ```
 
 
