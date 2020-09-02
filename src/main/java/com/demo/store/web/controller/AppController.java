@@ -41,6 +41,7 @@ public class AppController  {
 	public ModelAndView about(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 		return new ModelAndView("about");
 	}
+	@ResponseBody
 	public ModelAndView home(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 		System.out.println("Inside Controller****************home");
 		//create shopping cart
