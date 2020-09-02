@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 
 import com.demo.store.entity.Cart;
 import com.demo.store.entity.CartItem;
@@ -33,7 +32,7 @@ import com.google.gson.Gson;
 
 
 @Controller
-public class AppController extends MultiActionController {
+public class AppController  {
 
 
 	private DataService<Product> productService;
