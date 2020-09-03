@@ -3,16 +3,11 @@ package com.demo.store.service;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 import com.demo.store.entity.Product;
 
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
@@ -20,32 +15,43 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-@Transactional
-@Repository
-public class ProductService {
+public class ProductService implements DataService<Product>{
 
     @PersistenceContext
     EntityManager em;
-    
-
-
-    public void test() {
-        //query
         
-       List list =  em.createQuery("from Product where name = :n").setParameter("n", "Container").getResultList();
-       log.info(" Got results "+list.size());
-       Product p = (Product)list.get(0);
-       log.info("product "+p.getName());
-        p.setDescription("random desc");
-        em.merge(p);
-        p = new Product();
-        p.setName("new");
-        em.persist(p);
 
-
-
+    @Override
+    public Product add(Product entity) {
+        em.persist(entity);
+        return entity;
     }
- 
+
+    @Override
+    public Product get(Product entity) {
+        return em.find(Product.class, entity.getId());
+    }
+    @Override
+    public List<Product> getAll() {
+        return em.createQuery("from Product").getResultList();
+        
+    }
+    @Override
+    public Product remove(Product entity) {
+        //if detached, attach it before it can be removed
+        em.remove(em.contains(entity) ? entity : em.merge(entity));
+        return entity;
+    }
+    @Override
+    //ugly method .... needs to relook probably named query
+    public List<Product> query(String query, Object... param) {
+        return null;
+    }
+    @Override
+    public Product update(Product entity) {
+        return em.merge(entity);
+        
+    }
 }
 /** 
  * //keeping ths hibernation localsessionfactory reference codes

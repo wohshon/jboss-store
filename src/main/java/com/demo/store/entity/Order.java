@@ -17,8 +17,11 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import lombok.Data;
+
 @Entity
 @Table(name="orders")
+@Data
 public class Order extends AbstractGeneratedIdEntity {
 
 	/**
@@ -36,45 +39,14 @@ public class Order extends AbstractGeneratedIdEntity {
 	//@JoinColumn(name="customer", referencedColumnName="email",updatable=false)
 	@Transient 
 	private Customer customer;
-	@Column(name="customerId")
-	private String customerId;
+
 	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
 	private List<OrderItem> items=new ArrayList<OrderItem>();
 	@Override
 	public Long getId() {
-		// TODO Auto-generated method stub
 		return id;
 	}
-	public Date getOrderDate() {
-		return orderDate;
-	}
-	public void setOrderDate(Date orderDate) {
-		this.orderDate = orderDate;
-	}
-	public BigDecimal getTotalPrice() {
-		return totalPrice;
-	}
-	public void setTotalPrice(BigDecimal totalPrice) {
-		this.totalPrice = totalPrice;
-	}
-	public Customer getCustomer() {
-		return customer;
-	}
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
-	}
-	public List<OrderItem> getItems() {
-		return items;
-	}
-	public void setItems(List<OrderItem> items) {
-		this.items = items;
-	}
-	public String getCustomerId() {
-		return customerId;
-	}
-	public void setCustomerId(String customerId) {
-		this.customerId = customerId;
-	}
+
 	
 	
 	
