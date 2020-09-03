@@ -15,12 +15,13 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-@Configuration
-@EnableTransactionManagement
+//Not using HibernateConfig, using JPA, keeping here for reference
+//@Configuration
+//@EnableTransactionManagement
 public class HibernateConfig {
-    @Autowired
+    //@Autowired
     private ApplicationContext context;
-    @Bean
+    //@Bean
     public LocalSessionFactoryBean sessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());
@@ -29,7 +30,7 @@ public class HibernateConfig {
  
         return sessionFactory;
     }
-    @Bean
+    //@Bean
     public DataSource dataSource() {
         DataSource ds = null;
         try {
@@ -39,7 +40,7 @@ public class HibernateConfig {
         }
         return ds;
     }
-    @Bean
+    //@Bean
     public PlatformTransactionManager hibernateTransactionManager() {
         HibernateTransactionManager transactionManager
           = new HibernateTransactionManager();
