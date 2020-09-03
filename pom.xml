@@ -34,21 +34,14 @@
         </license>
     </licenses>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.spring>5.2.8.RELEASE</version.spring>
-        <!-- JBoss dependency versions -->
-        <version.jboss.maven.plugin>7.9.Final</version.jboss.maven.plugin>
-
-        <!-- Define the version of the JBoss BOMs we want to import to specify 
-            tested stacks. -->
-        <version.jboss.bom.eap>7.2.0.GA</version.jboss.bom.eap>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <version.jboss.bom.eap>7.2.0.GA</version.jboss.bom.eap>
         <version.javaee.spec>1.0.4.Final-redhat-00001</version.javaee.spec>
-        <!-- other plugin versions -->
-        <version.surefire.plugin>2.22.2</version.surefire.plugin>
+        <version.spring-webmvc>5.2.8.RELEASE</version.spring-webmvc>
         <version.war.plugin>3.3.1</version.war.plugin>
-
-    </properties>
+        <version.hibernate>5.4.21.Final</version.hibernate>
+  </properties>
 
 
     <dependencyManagement>
@@ -71,282 +64,158 @@
 
     </dependencyManagement>
 
-    <dependencies>
-		
+  <dependencies>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${version.spring-webmvc}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+            <version>${version.spring-webmvc}</version>
+        </dependency>
+
 <dependency>
-	<groupId>org.springframework</groupId>
-	<artifactId>spring-tx</artifactId>
-    <version>${version.spring></version>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-context</artifactId>
+    <version>${version.spring-webmvc}</version>
 </dependency>
 <dependency>
     <groupId>org.springframework</groupId>
+    <artifactId>spring-web</artifactId>
+    <version>${version.spring-webmvc}</version>
+</dependency>      
+<dependency>
+    <groupId>org.springframework</groupId>
     <artifactId>spring-orm</artifactId>
-    <version>5.2.8.RELEASE</version>
+    <version>${version.spring-webmvc}</version>
+</dependency>
+<dependency>
+    <groupId>org.hibernate</groupId>
+    <artifactId>hibernate-core</artifactId>
+    <version>${version.hibernate}</version>
 </dependency>
 
+<!-- https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator -->
+<dependency>
+    <groupId>org.hibernate.validator</groupId>
+    <artifactId>hibernate-validator</artifactId>
+    <version>6.1.2.Final-redhat-00004</version>
+</dependency>
 
+<dependency>
+    <groupId>org.apache.tomcat</groupId>
+    <artifactId>tomcat-dbcp</artifactId>
+    <version>9.0.30.redhat-6</version>
+</dependency>
+
+<dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
+    <version>1.18.12</version>
+</dependency>
 	<dependency>
-		<groupId>org.springframework</groupId>
-		<artifactId>spring-core</artifactId>
-		<version>5.2.8.RELEASE</version>
+		<groupId>org.apache.logging.log4j</groupId>
+		<artifactId>log4j-slf4j-impl</artifactId>
+		<version>2.13.3</version>
 	</dependency>
-	<dependency>
-		<groupId>org.springframework</groupId>
-		<artifactId>spring-webmvc</artifactId>
-		<version>${version.spring></version>
-	</dependency>
-<dependency>
-    <groupId>org.jboss.spec.javax.transaction</groupId>
-    <artifactId>jboss-transaction-api_1.2_spec</artifactId>
-    <scope>provided</scope>
-</dependency>
 
-<dependency>
-    <groupId>com.fasterxml.jackson.core</groupId>
-    <artifactId>jackson-databind</artifactId>
-    <version>2.10.4.redhat-00001</version>
-</dependency>
-
-<dependency>
-    <groupId>com.google.code.gson</groupId>
-    <artifactId>gson</artifactId>
-    <version>2.8.5.redhat-00001</version>
-</dependency>
-
-
-
-        <!-- First declare the APIs we depend on and need for compilation. All 
-            of them are provided by JBoss EAP 6 -->
-
-        <!-- Import the CDI API, we use provided scope as the API is included in 
-            JBoss EAP 7 -->
+        <!-- JSTL Dependency -->
         <dependency>
-            <groupId>javax.enterprise</groupId>
-            <artifactId>cdi-api</artifactId>
+            <groupId>javax.servlet.jsp.jstl</groupId>
+            <artifactId>javax.servlet.jsp.jstl-api</artifactId>
+            <version>1.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>taglibs</groupId>
+            <artifactId>standard</artifactId>
+            <version>1.1.2</version>
+        </dependency>
+
+        <!-- Servlet Dependency -->
+        <dependency>
+             <groupId>javax.servlet</groupId>
+             <artifactId>javax.servlet-api</artifactId>
+             <version>3.1.0</version>
+             <scope>provided</scope>
+        </dependency>
+
+        <!-- JSP Dependency -->
+        <dependency>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>javax.servlet.jsp-api</artifactId>
+            <version>2.3.1</version>
             <scope>provided</scope>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator -->
-        <dependency>
-          <groupId>org.hibernate.validator</groupId>
-          <artifactId>hibernate-validator</artifactId>
-          <scope>provided</scope>
-        <!--
-        <version>6.0.16.Final-redhat-00001</version>
-        -->
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
+        </dependency>        
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
-        </dependency>
-     <dependency>
-          <groupId>org.hibernate.validator</groupId>
-          <artifactId>hibernate-validator-annotation-processor</artifactId>
-          <scope>provided</scope>
-        <!--
-        <version>6.0.16.Final-redhat-00001</version>
-        -->
-        </dependency>
-
-<dependency>
-   <groupId>org.reactivestreams</groupId>
-   <artifactId>reactive-streams</artifactId>
-   <version>1.0.3</version>
-</dependency>
-
-     <dependency>
-          <groupId>javax.persistence</groupId>
-          <artifactId>javax.persistence-api</artifactId>
-          <scope>provided</scope>
-        </dependency>
-<!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
-<dependency>
-    <groupId>javax.servlet</groupId>
-    <artifactId>javax.servlet-api</artifactId>
-    <version>3.1.0.redhat-1</version>
-    <scope>provided</scope>
-</dependency>
-
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Optional, but highly recommended -->
-        <!-- Arquillian allows you to test enterprise code such as EJBs and Transactional(JTA) 
-            JPA from JUnit/TestNG -->
-        <dependency>
-            <groupId>org.jboss.arquillian.junit</groupId>
-            <artifactId>arquillian-junit-container</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jboss.arquillian.protocol</groupId>
-            <artifactId>arquillian-protocol-servlet</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-    </dependencies>
-
-    <build>
-        <!-- Maven will append the version to the finalName (which is the name 
-            given to the generated war, and hence the context root) -->
-        <finalName>${project.artifactId}</finalName>
-        <plugins>
-<plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-compiler-plugin</artifactId>
-    <version>3.8.1</version>
-    
-    <configuration>
-    <forceJavacCompilerUse>true</forceJavacCompilerUse>
-          <source>1.8</source>
-          <target>1.8</target>
-        <!--release>11</release-->
-    </configuration>
-</plugin>
-
-            <plugin>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>${version.war.plugin}</version>
-                <configuration>
-                    <!-- Java EE 6 doesn't require web.xml, Maven needs to catch up! -->
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
-                    <!-- need to turn this on when deploying to osev3, or dun check in this file-->
-						<warName>ROOT</warName>
-			
-                </configuration>
-            </plugin>
-            <!-- The JBoss AS plugin deploys your war to a local JBoss EAP container -->
-            <!-- To use, run: mvn package jboss-as:deploy -->
-            <plugin>
-                <groupId>org.jboss.as.plugins</groupId>
-                <artifactId>jboss-as-maven-plugin</artifactId>
-                <version>${version.jboss.maven.plugin}</version>
-            </plugin>
-        </plugins>
-    </build>
-
-    <profiles>
-        <profile>
-            <!-- The default profile skips all tests, though you can tune it to run 
-                just unit tests based on a custom pattern -->
-            <!-- Seperate profiles are provided for running all tests, including Arquillian 
-                tests that execute in the specified container -->
-            <id>default</id>
-            <activation>
-                <property>
-                    <name>!default</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>${version.surefire.plugin}</version>
-                        <configuration>
-                            <skip>true</skip>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <profile>
-            <!-- An optional Arquillian testing profile that executes tests in your 
-                JBoss EAP instance -->
-            <!-- This profile will start a new JBoss EAP instance, and execute the 
-                test, shutting it down when done -->
-            <!-- Run with: mvn clean test -Parq-jbossas-managed -->
-            <id>arq-jbossas-managed</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>${version.surefire.plugin}</version>
-                        <configuration>
-                            <skip>false</skip>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss.as</groupId>
-                    <artifactId>jboss-as-arquillian-container-managed</artifactId>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-        </profile>
-
-        <profile>
-            <!-- An optional Arquillian testing profile that executes tests in a remote 
-                JBoss EAP instance -->
-            <!-- Run with: mvn clean test -Parq-jbossas-remote -->
-            <id>arq-jbossas-remote</id>
-              <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>${version.surefire.plugin}</version>
-                        <configuration>
-                            <skip>false</skip>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-            <dependencies>
-                <dependency>
-                    <groupId>org.jboss.as</groupId>
-                    <artifactId>jboss-as-arquillian-container-remote</artifactId>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-        </profile>
-
-        <profile>
-            <!-- When built in OpenShift the 'openshift' profile will be used when 
-                invoking mvn. -->
-            <!-- Use this profile for any OpenShift specific customization your app 
-                will need. -->
-            <!-- By default that is to put the resulting archive into the 'deployments' 
-                folder. -->
-            <!-- http://maven.apache.org/guides/mini/guide-building-for-different-environments.html -->
-            <id>openshift</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-war-plugin</artifactId>
-                        <version>${version.war.plugin}</version>
-                        <configuration>
-                            <outputDirectory>deployments</outputDirectory>
-                            <warName>ROOT</warName>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <!-- Activate JBoss Product Maven repository -->
-        <profile>
-            <id>jboss-product-repository</id>
-            <activation>
-                <property>
-                    <name>!jboss-product-repository</name>
-                </property>
-            </activation>
-            <repositories>
-                <repository>
-                    <id>redhat-techpreview-all-repository</id>
-                    <url>http://maven.repository.redhat.com/techpreview/all/</url>
-                </repository>
-            </repositories>
-        </profile>
-
-    </profiles>
+  <build>
+    <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
+      <plugins>
+        <plugin>
+            <artifactId>maven-war-plugin</artifactId>
+            <version>${version.war.plugin}</version>
+            <configuration>
+                <!-- Java EE 6 doesn't require web.xml, Maven needs to catch up! -->
+                <failOnMissingWebXml>false</failOnMissingWebXml>
+                <!-- need to turn this on when deploying to osev3, or dun check in this file-->
+                <warName>ROOT</warName>
+                <!--<warName>${project.name}</warName>-->
+            </configuration>
+        </plugin>
+        <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
+        <plugin>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>3.1.0</version>
+        </plugin>
+        <!-- default lifecycle, jar packaging: see https://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
+        <plugin>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>3.0.2</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.8.0</version>
+    		<configuration>
+		    <forceJavacCompilerUse>true</forceJavacCompilerUse>
+		          <source>1.8</source>
+		          <target>1.8</target>
+		        <!--release>11</release-->
+	       </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.22.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>3.0.2</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>2.5.2</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>2.8.2</version>
+        </plugin>
+        <!-- site lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#site_Lifecycle -->
+        <plugin>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>3.7.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-project-info-reports-plugin</artifactId>
+          <version>3.0.0</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
 </project>
