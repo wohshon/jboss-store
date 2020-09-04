@@ -32,8 +32,11 @@ public class AppController {
     @GetMapping("/home")
     public ModelAndView home(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
         log.info("In Controller {}","home");
-        ModelAndView mv = new ModelAndView("index");
+        ModelAndView mv = new ModelAndView("home");
         //productService.test();
+        List<Product> products = productService.getAll();
+        session.setAttribute("SESS_PRODUCTS", products);
+        //session.getAttribute("LOGIN_USER");
         mv.addObject("msg", "Hello!");
         return mv;
         
@@ -63,6 +66,9 @@ public class AppController {
         p.setId(4L);
          p = productService.get(p);
          log.info("products by id again: {} {}", p.getName(),p.getClass());
+        String[] params = {"name", "Tux Doll"};
+        List<Product> results = productService.query("Product.findByName", (Object[])params); 
+        log.info("products by name: {} {} ", results.size(), results.get(0)!=null?results.get(0).getName():"No result");
 
         return "test";
     }

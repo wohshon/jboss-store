@@ -33,7 +33,8 @@ public class ProductService implements DataService<Product>{
     }
     @Override
     public List<Product> getAll() {
-        return em.createQuery("from Product").getResultList();
+        //return em.createQuery("from Product").getResultList();
+        return em.createNamedQuery("Product.findAll", Product.class).getResultList();
         
     }
     @Override
@@ -43,9 +44,9 @@ public class ProductService implements DataService<Product>{
         return entity;
     }
     @Override
-    //ugly method .... needs to relook probably named query
+    //ugly method .... needs to relook , just support getbyname for now
     public List<Product> query(String query, Object... param) {
-        return null;
+        return em.createNamedQuery(query, Product.class).setParameter((String)param[0], param[1]).getResultList();
     }
     @Override
     public Product update(Product entity) {
