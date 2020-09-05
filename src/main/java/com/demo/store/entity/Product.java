@@ -24,6 +24,8 @@ public class Product extends AbstractGeneratedIdEntity {
 	 * 
 	 */
 	private static final long serialVersionUID = 5602231572577587307L;
+	@Column(name="productId", unique = true)
+	private String productId;
 	@Column(name = "shortDesc")
 	private String shortDescription;
 	@Column(name = "descp")

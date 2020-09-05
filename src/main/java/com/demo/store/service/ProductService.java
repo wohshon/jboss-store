@@ -29,7 +29,14 @@ public class ProductService implements DataService<Product>{
 
     @Override
     public Product get(Product entity) {
-        return em.find(Product.class, entity.getId());
+        return em.find(Product.class, entity.getProductId());
+    }
+    @Override
+    public Product getByEntityId(Product entity) {
+        log.info(" pid {}",entity.getProductId());
+        List<Product> list = em.createQuery("FROM Product WHERE productId = :pid").setParameter("pid", entity.getProductId()).getResultList();
+        log.info("results {}",list);
+        return list.get(0);
     }
     @Override
     public List<Product> getAll() {
