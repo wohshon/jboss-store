@@ -17,8 +17,8 @@ insert into customers(id, name, email, address, contact) values (null, 'John Doe
 insert into customers(id, name, email, address, contact) values (null, 'Jane Doe', 'janed@gmail.com', '102, Shenton Way, 10-11 Singapore 123456','+65-12344567');
 insert into customers(id, name, email, address, contact) values (null, 'Jeffe Doe', 'jeff@gmail.com', 'MBS, 10-11 Singapore 55555','+65-8844567');
 
-insert into inventory(id, name, product, stock, uom) values (null, 'p0001','p0001', 50, 'UNIT' );
-insert into inventory(id, name, product, stock, uom) values (null, 'p0002','p0002', 50, 'UNIT' );
-insert into inventory(id, name, product, stock, uom) values (null, 'p0003','p0003', 50, 'UNIT' );
-insert into inventory(id, name, product, stock, uom) values (null, 'p0004', 'p0004', 50, 'UNIT' );
-insert into inventory(id, name, product, stock, uom) values (null, 'p0005', 'p0005', 50, 'UNIT' );
+insert into inventory(id, name, product, stock, uom) values (null, 'p0001','p0001', 1000, 'UNIT' );
+insert into inventory(id, name, product, stock, uom) values (null, 'p0002','p0002', 1000, 'UNIT' );
+insert into inventory(id, name, product, stock, uom) values (null, 'p0003','p0003', 1000, 'UNIT' );
+insert into inventory(id, name, product, stock, uom) values (null, 'p0004', 'p0004', 1000, 'UNIT' );
+insert into inventory(id, name, product, stock, uom) values (null, 'p0005', 'p0005', 1000, 'UNIT' );
