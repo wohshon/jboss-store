@@ -5,6 +5,8 @@
 
 TL;DR - To deploy the sample
 
+Assuming the OCP environment already have the EAP / MYSQL Images in place
+
 ```
 # oc new-project app
 
