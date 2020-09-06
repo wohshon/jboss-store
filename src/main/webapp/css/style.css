@@ -1,0 +1,68 @@
+.test{
+
+    background: red;
+    border-color: blue;
+    border-width: 2px;
+    border-style: solid;
+}
+
+
+/* as selector label */
+.inputQty {
+
+}
+
+.form-signin {
+    width: 100%;
+    max-width: 330px;
+    padding: 15px;
+    margin: 0 auto;
+  }
+.form-signin .checkbox {
+    font-weight: 400;
+  }
+  .form-signin .form-control {
+    position: relative;
+    box-sizing: border-box;
+    height: auto;
+    padding: 10px;
+    font-size: 16px;
+  }
+  .form-signin .form-control:focus {
+    z-index: 2;
+  }
+  .form-signin input[type="email"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  .form-signin input[type="password"] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+
+  /* check out */
+  .form-checkout {
+    width: 100%;
+    padding: 15px;
+    margin: 0 auto;
+  }
+.form-checkout .checkbox {
+    font-weight: 400;
+  }
+.form-checkout .form-control {
+    position: relative;
+    box-sizing: border-box;
+    height: auto;
+    padding: 10px;
+    font-size: 16px;
+  }
+  .form-checkout .form-control:focus {
+    z-index: 2;
+  }
+  .form-checkout input[type="text"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+  }
