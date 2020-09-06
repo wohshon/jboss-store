@@ -15,7 +15,9 @@ import lombok.Data;
     @NamedQuery(name="Product.findAll",
                 query="SELECT p FROM Product p"),
     @NamedQuery(name="Product.findByName",
-                query="SELECT p FROM Product p WHERE p.name LIKE :name"),
+				query="SELECT p FROM Product p WHERE p.name LIKE :name"),
+	@NamedQuery(name="Product.findByProducts",
+                query="SELECT p FROM Product p WHERE p.productId IN (:ids)")				
 }) 
 public class Product extends AbstractGeneratedIdEntity {
 

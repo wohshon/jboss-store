@@ -56,7 +56,10 @@ public class Order extends AbstractGeneratedIdEntity {
 		return id;
 	}
 
-	
+	@Override
+	public String toString() {
+		return this.getName();
+	}
 	
 	
 	

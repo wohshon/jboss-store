@@ -1,5 +1,6 @@
 package com.demo.store.service;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -29,15 +30,14 @@ public class ProductService implements DataService<Product>{
 
     @Override
     public Product get(Product entity) {
-        return em.find(Product.class, entity.getProductId());
+        return em.find(Product.class, entity.getId());
     }
     @Override
     public Product getByEntityId(Product entity) {
         log.info(" pid {}",entity.getProductId());
-        List<Product> list = em.createQuery("FROM Product WHERE productId = :pid").setParameter("pid", entity.getProductId()).getResultList();
-        log.info("results {}",list);
-        return list.get(0);
+        return (Product) em.createQuery("FROM Product WHERE productId = :pid").setParameter("pid", entity.getProductId()).getSingleResult();
     }
+    
     @Override
     public List<Product> getAll() {
         //return em.createQuery("from Product").getResultList();
@@ -54,6 +54,8 @@ public class ProductService implements DataService<Product>{
     //ugly method .... needs to relook , just support getbyname for now
     public List<Product> query(String query, Object... param) {
         return em.createNamedQuery(query, Product.class).setParameter((String)param[0], param[1]).getResultList();
+        //String[] x ={"p0001","p0003"};
+        //return em.createNamedQuery("Product.findByProducts", Product.class).setParameter("ids", Arrays.asList(x)).getResultList();
     }
     @Override
     public Product update(Product entity) {

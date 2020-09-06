@@ -12,19 +12,19 @@
                 <li class="nav-item active">
                   <a class="nav-link" href="./home-direct.page">Home <span class="sr-only">(current)</span></a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item active">
                   <a class="nav-link" href="./viewCart.page" id="viewCartLink">View Cart</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item active">
                   <a class="nav-link " href="./viewOrders.page" >View Orders</a>
                 </li>              
-                <li class="nav-item">
+                <li class="nav-item active">
                   <a class="nav-link " href="#" > login as : ${sessionScope.SESS_USER.name}</a>
                 </li>
               </ul>
               <form class="form-inline mt-2 mt-md-0" id="searchForm">
                 <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                <button class="btn btn-primary my-2 my-sm-0" type="submit">Search</button>
               </form>
             </div>
           </nav>

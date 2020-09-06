@@ -1,5 +1,7 @@
 package com.demo.store.web;
 
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -17,10 +19,15 @@ import com.demo.store.dto.ProductDTO;
 import com.demo.store.entity.Cart;
 import com.demo.store.entity.CartItem;
 import com.demo.store.entity.Customer;
+import com.demo.store.entity.Delivery;
+import com.demo.store.entity.Inventory;
 import com.demo.store.entity.Order;
 import com.demo.store.entity.OrderItem;
 import com.demo.store.entity.Product;
 import com.demo.store.service.DataService;
+import com.demo.store.service.DeliveryService;
+import com.demo.store.service.InventoryBusinessService;
+import com.demo.store.service.InventoryService;
 import com.demo.store.service.ProductService;
 import com.google.gson.Gson;
 
@@ -50,6 +57,11 @@ public class AppController {
 
     @Autowired
     DataService<Customer> customerService;
+
+    @Autowired
+    DataService<Delivery> deliveryService;
+    @Autowired
+    InventoryBusinessService inventoryBusinessService;
 
     @GetMapping("/login")
     public String login() {
@@ -108,6 +120,8 @@ public class AppController {
         order.setCustomer(cart.getCustomer());
         order.setName(request.getParameter("orderName"));
         OrderItem orderItem = null;
+        ModelAndView mv = new ModelAndView("confirm");
+
         for (CartItem cartItem : cart.getItems()) {
             orderItem = new OrderItem();
             orderItem.setItem(cartItem.getItem());
@@ -116,13 +130,32 @@ public class AppController {
             orderItem.setName(orderItem.getItem().getName());
             orderItem.setOrder(order);
             order.getItems().add(orderItem);
-            
+            try {
+            inventoryBusinessService.updateInventory(orderItem);
+            } catch (Exception e) {
+                // should be not enough stock , //TODO, write a custom exception
+                log.info("caucht exception when updating inventory");
+                e.printStackTrace();
+                mv.setViewName("home");
+                return mv;
+            }
+            //create Delivery Service
+
         }
         order = orderService.save(order);
+        order = orderService.get(order);
+        Delivery del = new Delivery();
+        del.setOrder(order);
+        del.setName(order.getName());
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.WEEK_OF_MONTH, 1);
+        del.setDeliveryDate(cal.getTime());
+        deliveryService.save(del);
+
         log.info("saved Order {}",order.getName());
+        log.info("saved Delivery {}",del.getName());
         //invalidate cart after services are called
         session.removeAttribute("SESS_CART");
-        ModelAndView mv = new ModelAndView("confirm");
         return mv;
     }
 
@@ -134,6 +167,17 @@ public class AppController {
         Object[] params = {"customer",c };
         List<Order> orders = orderService.query("Order.findByUsers", params);
         request.setAttribute("REQ_ORDERS", orders);
+
+        Order[] orderParams = new Order[orders.size()];
+        int i = 0;
+        for (Order order : orders) {
+            log.info("Orders {}",order.getName());
+            orderParams[i++]= order;
+        }
+        Object[] searchParams = {"deliveryOrders",Arrays.asList(orderParams)};
+        List<Delivery> deliveries = deliveryService.query("Delivery.findByOrder", searchParams);
+        log.info("deliveries based on orders {}", deliveries);
+        request.setAttribute("REQ_DELVS", deliveries);
         ModelAndView mv = new ModelAndView("viewOrders");
         return mv;
     }
@@ -168,6 +212,7 @@ public class AppController {
                 cartItem.setQty(cartItemDTO.getQty());
                 cartItem.setItem(productService.getByEntityId(p));
                 cart.addItem(cartItem);
+
             }
         }
         log.info("number of items in cart {}",cart.getItems().size());
@@ -181,7 +226,17 @@ public class AppController {
 
     @GetMapping("/viewCart")
     public ModelAndView viewCart(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
-
+        String deleteCart = request.getParameter("deleteCart");
+        if (Boolean.parseBoolean(deleteCart)) {
+            session.removeAttribute("SESS_CART");
+            Cart cart = new Cart();
+            Customer c = new Customer();
+            c.setEmail(((CustomerDTO)session.getAttribute("SESS_USER")).getEmail());
+            c = customerService.getByEntityId(c);
+            cart.setCustomer(c);
+            session.setAttribute("SESS_CART", cart);
+                        
+        }
         ModelAndView mv = new ModelAndView("viewCart");
         return mv;
     }
@@ -261,7 +316,18 @@ public class AppController {
         List<Product> products = productService.getAll();
         log.info("products size : {}",products.size());
 
-        Product p = productService.get(products.get(0));
+        Product p = new Product();
+        p.setId(4L);
+       //p.setProductId("p0004");
+        p = productService.get(p);
+        log.info("product : {} {}",p.getId(), p.getName());
+        p = new Product();
+        p.setProductId("p0001");
+        p = productService.getByEntityId(p);
+        log.info("product by productId: {} {}",p.getId(), p.getName());
+        
+        
+        p = productService.get(products.get(0));
         log.info("products by id : {} {}", p.getName(),p.getClass());
         p.setName("changed");
         productService.update(p);
@@ -271,18 +337,22 @@ public class AppController {
         p.setName("Newbie");
         productService.save(p);
 
-        p = new Product();
-        p.setId(3L);
-        productService.remove(p);
+        //p = new Product();
+        //p.setId(3L);
+        //productService.remove(p);
         p = new Product();
 
         p.setId(4L);
          p = productService.get(p);
          log.info("products by id again: {} {}", p.getName(),p.getClass());
-        String[] params = {"name", "Tux Doll"};
-        List<Product> results = productService.query("Product.findByName", (Object[])params); 
-        log.info("products by name: {} {} ", results.size(), results.get(0)!=null?results.get(0).getName():"No result");
+        //String[] params = {"name", "Tux Doll"};
+        //List<Product> results = productService.query("Product.findByName", (Object[])params); 
+        //log.info("products by name: {} {} ", results.size(), results.get(0)!=null?results.get(0).getName():"No result");
 
+        String[] sarray = {"p0001","p0003"};
+        Object[] params = {"ids", sarray };
+        List<Product> results = productService.query("Product.findByProducts", params); 
+        log.info("products by name: {} {} ", results.size(), results.get(0)!=null?results.get(0).getName():"No result");
         return "test";
     }
 
