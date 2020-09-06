@@ -1,6 +1,5 @@
 package com.demo.store.entity;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -11,17 +10,27 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 
 import lombok.Data;
 
 @Entity
 @Table(name="orders")
 @Data
+@NamedQueries({
+    @NamedQuery(name="Order.findAll",
+                query="SELECT o FROM Order o"),
+    @NamedQuery(name="Order.findByStatus",
+				query="SELECT o FROM Order o WHERE o.status = :status"),
+	@NamedQuery(name="Order.findByUsers",
+                query="SELECT o FROM Order o WHERE o.customer = :customer")				
+}) 
 public class Order extends AbstractGeneratedIdEntity {
 
 	/**
@@ -33,13 +42,13 @@ public class Order extends AbstractGeneratedIdEntity {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date orderDate;
 	@Column(name="totalPrice")
-	private BigDecimal totalPrice;
-	//TODO need to come back to fix this contraint thingy, using a hack of customerid now
-	//@ManyToOne(cascade=CascadeType.ALL)
-	//@JoinColumn(name="customer", referencedColumnName="email",updatable=false)
-	@Transient 
+	private Double totalPrice;
+	@Column(name = "status")
+	private String status="NEW";
+	@ManyToOne
+	@JoinColumn(name="customer", referencedColumnName="email",updatable=false)
+	//@Transient 
 	private Customer customer;
-
 	@OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.ALL)
 	private List<OrderItem> items=new ArrayList<OrderItem>();
 	@Override

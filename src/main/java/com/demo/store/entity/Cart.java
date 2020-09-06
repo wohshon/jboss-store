@@ -1,7 +1,6 @@
 package com.demo.store.entity;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -18,16 +17,16 @@ public class Cart implements Serializable{
 	 */
 	private static final long serialVersionUID = 8711429908091000910L;
 	private List<CartItem> items=new ArrayList<CartItem>();
-	private BigDecimal totalPrice=BigDecimal.ZERO;
+	private Double totalPrice=Double.valueOf(0D);
 	private Customer customer;
 	
 	public void refresh() {
-		this.totalPrice=BigDecimal.ZERO;
+		this.totalPrice=Double.valueOf(0D);
 		for (CartItem item:items) {
 			log.info("item: {} ",item);
 			item.setLinePrice(item.getItem().getPrice().doubleValue()*item.getQty());
 			log.info("line price: {}",item.getLinePrice());
-			this.totalPrice=this.totalPrice.add(BigDecimal.valueOf(item.getLinePrice()));
+			this.totalPrice=this.totalPrice + item.getLinePrice();
 		}
 		
 	}

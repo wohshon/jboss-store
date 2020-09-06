@@ -16,10 +16,10 @@
                   <a class="nav-link" href="./viewCart.page" id="viewCartLink">View Cart</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link " href="#" >View Past Orders</a>
+                  <a class="nav-link " href="./viewOrders.page" >View Orders</a>
                 </li>              
                 <li class="nav-item">
-                  <a class="nav-link " href="#" > login as : ${sessionScope.SESS_USER}</a>
+                  <a class="nav-link " href="#" > login as : ${sessionScope.SESS_USER.name}</a>
                 </li>
               </ul>
               <form class="form-inline mt-2 mt-md-0" id="searchForm">

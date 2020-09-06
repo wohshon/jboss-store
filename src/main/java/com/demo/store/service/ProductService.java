@@ -22,7 +22,7 @@ public class ProductService implements DataService<Product>{
         
 
     @Override
-    public Product add(Product entity) {
+    public Product save(Product entity) {
         em.persist(entity);
         return entity;
     }

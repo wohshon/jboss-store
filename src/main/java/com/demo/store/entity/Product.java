@@ -1,6 +1,5 @@
 package com.demo.store.entity;
 
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,7 +30,7 @@ public class Product extends AbstractGeneratedIdEntity {
 	@Column(name = "descp")
 	private String description;
 	@Column(name = "price")
-	private BigDecimal price;
+	private Double price;
 	@Column(name="img")
 	private String img;
 	@Override

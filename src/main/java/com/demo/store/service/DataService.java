@@ -18,7 +18,7 @@ public interface DataService<E extends AbstractGeneratedIdEntity> {
     public List<E> getAll();
     public E get(E entity);
     public E getByEntityId(E entity); // by customed Id, not the primary key
-    public E add(E entity);
+    public E save(E entity);
     public E remove(E entity);
     public E update(E entity);
     public List<E> query(String query, Object...param);
