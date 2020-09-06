@@ -52,7 +52,7 @@ public class PersistenceJPAConfig {
         hibernateProperties.setProperty(
           "hibernate.hbm2ddl.auto", "create-drop");
         hibernateProperties.setProperty(
-          "hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
+          "hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
         hibernateProperties.setProperty(
             "hibernate.hbm2ddl.import_files", "META-INF/import.sql");
         hibernateProperties.setProperty(
