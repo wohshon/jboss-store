@@ -16,7 +16,7 @@ Assuming the OCP environment already have the EAP / MYSQL Images and Templates i
 
 # oc new-app eap72-mysql-persistent-s2i --name=jboss-store -p SOURCE_REPOSITORY_URL=https://github.com/wohshon/jboss-store -p SOURCE_REPOSITORY_REF=monolith-mvc -p DB_JNDI=java:jboss/datasources/storeDS -p CONTEXT_DIR=''
 ```
-- Scale up to multiple PODs, cluster is form automatically and session failover can be tested using the cart.
+- Scale up multiple EAP PODs, cluster is form automatically and session failover can be tested using the cart by deleting the POD that is serving the request. The logs can be observed to determine which POD is serving the request.
 
 ### Seed data
 
