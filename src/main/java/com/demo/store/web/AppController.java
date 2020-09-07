@@ -30,6 +30,7 @@ import com.demo.store.service.DataService;
 import com.demo.store.service.delivery.DeliveryBusinessService;
 import com.demo.store.service.inventory.InventoryBusinessService;
 import com.demo.store.service.invoice.InvoiceBusinessService;
+import com.demo.store.service.order.OrderBusinessService;
 import com.google.gson.Gson;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,6 +71,9 @@ public class AppController {
     @Autowired
     InvoiceBusinessService invoiceBusinessService;
 
+    @Autowired
+    OrderBusinessService orderBusinessService;
+
     @GetMapping("/login")
     public String login() {
         // simple routing
@@ -97,9 +101,7 @@ public class AppController {
             List<Product> products = productDataService.getAll();
             session.setAttribute("SESS_PRODUCTS", products);
             // create new shopping cart since a login is done
-            Cart cart = new Cart();
-            cart.setCustomer(c);
-            session.setAttribute("SESS_CART", cart);
+            refreshCart(session);
             mv.setViewName("home");
         } else {
             mv.setViewName("login");
@@ -120,37 +122,23 @@ public class AppController {
         log.info("Checking out cart with ${} for {}", cart.getTotalPrice(), session.getAttribute("SESS_USER"));
         // call other services
         // create Order;
-        Order order = new Order();
-        order.setOrderDate(new Date());
-        order.setTotalPrice(cart.getTotalPrice());
-
-        // get customer from cart
-        order.setCustomer(cart.getCustomer());
-        order.setName(request.getParameter("orderName"));
-        OrderItem orderItem = null;
         ModelAndView mv = new ModelAndView("confirm");
 
-        for (CartItem cartItem : cart.getItems()) {
-            orderItem = new OrderItem();
-            orderItem.setItem(cartItem.getItem());
-            orderItem.setQty(cartItem.getQty());
-            orderItem.setLineCost(cartItem.getLinePrice());
-            orderItem.setName(orderItem.getItem().getName());
-            orderItem.setOrder(order);
-            order.getItems().add(orderItem);
-            try {
-                inventoryBusinessService.updateInventory(orderItem);
-            } catch (Exception e) {
-                // should be not enough stock , //TODO, write a custom exception
-                log.info("caucht exception when updating inventory");
-                e.printStackTrace();
-                mv.setViewName("home");
-                return mv;
-            }
-
+        Order order = new Order();
+        order.setName(request.getParameter("orderName"));
+        try {
+            order = orderBusinessService.generateOrder(order, cart);
+        } catch (Exception e) {
+            // should be not enough stock , //TODO, write a custom exception
+            log.info("caucht exception when updating inventory");
+            e.printStackTrace();
+            mv.setViewName("home");
+            mv.addObject("msg", "Error during order submission, your shopping cart items will be cleared");
+            //clear and recreate cart
+            session.removeAttribute("SESS_CART");
+            refreshCart(session);
+            return mv;            
         }
-        order = orderDataService.save(order);
-        order = orderDataService.get(order);
 
         log.info("saved Order {}", order.getName());
         try {
@@ -208,14 +196,7 @@ public class AppController {
 
         log.info("Update Cart: {} items",cartItemDTOs.length);
         if (session.getAttribute("SESS_CART") == null ){
-            Cart cart = new Cart();
-            Customer c = new Customer();
-            c.setEmail(((CustomerDTO)session.getAttribute("SESS_USER")).getEmail());
-            c = customerDataService.getByEntityId(c);
-            cart.setCustomer(c);
-            session.setAttribute("SESS_CART", cart);
-            
-
+            refreshCart(session);
         }
         Cart cart = (Cart)session.getAttribute("SESS_CART");
         Map<String, CartItem> cartItemsMap =
@@ -249,18 +230,20 @@ public class AppController {
         String deleteCart = request.getParameter("deleteCart");
         if (Boolean.parseBoolean(deleteCart)) {
             session.removeAttribute("SESS_CART");
-            Cart cart = new Cart();
-            Customer c = new Customer();
-            c.setEmail(((CustomerDTO)session.getAttribute("SESS_USER")).getEmail());
-            c = customerDataService.getByEntityId(c);
-            cart.setCustomer(c);
-            session.setAttribute("SESS_CART", cart);
-                        
+            refreshCart(session);                        
         }
         ModelAndView mv = new ModelAndView("viewCart");
         return mv;
     }
 
+    private void refreshCart(HttpSession session) {
+        Cart cart = new Cart();
+        Customer c = new Customer();
+        c.setEmail(((CustomerDTO)session.getAttribute("SESS_USER")).getEmail());
+        c = customerDataService.getByEntityId(c);
+        cart.setCustomer(c);
+        session.setAttribute("SESS_CART", cart);
+    }
     @GetMapping("/test-order")
     public String testOrder (HttpServletRequest request, HttpServletResponse response, HttpSession session) {
         

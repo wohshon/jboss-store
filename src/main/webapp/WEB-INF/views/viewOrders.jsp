@@ -147,10 +147,13 @@
         <div class="col col-1 bg-dark text-white">
             #
         </div>
-        <div class="col col-5 bg-dark text-white">
+        <div class="col col-4 bg-dark text-white">
             Invoices for Orders
         </div>
-        <div class="col col-4 bg-dark text-white">
+        <div class="col col-3 bg-dark text-white">
+            Amount
+        </div>        
+        <div class="col col-2 bg-dark text-white">
             Invoice Date
         </div>
         <div class="col col-2 bg-dark text-white">
@@ -163,10 +166,13 @@
                 <c:set var="count2" value="${count2 + 1}" scope="page"/>
                 <c:out value = "${count2}"/>                    
             </div>
-            <div class="col col-5">
+            <div class="col col-4">
                 ${invoice.order.name}
             </div>
-            <div class="col col-4">
+            <div class="col col-3">
+                $${invoice.order.totalPrice}
+            </div>             
+            <div class="col col-2">
                 ${invoice.invoiceDate}
             </div>
             <div class="col col-2">

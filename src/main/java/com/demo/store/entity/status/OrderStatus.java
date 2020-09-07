@@ -9,6 +9,8 @@ public enum OrderStatus {
     PAID("Paid"),
     @SerializedName("DUE")
     DUE("Due"),
+    @SerializedName("CONFIRMED")
+    CONFIRMED("Confirmed"),
     @SerializedName("Cancelled")
     CANCELLED("Cancelled");
     public final String label;

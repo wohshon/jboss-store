@@ -44,6 +44,9 @@
 
     <!--main container-->
     <div class="container">
+        <div class="row">
+            <div class="col text-red">${msg}</div>
+        </div>
         <!--c:out value="${fn:length(PRODUCTS)}"/-->
         <div id="alertMsg" class="alert alert-success alert-dismissible fade show" role="alert">
             <label id="alertMsgContent">123</label>

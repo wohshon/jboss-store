@@ -75,7 +75,7 @@ The system does not check for any passwords, but will load the user based on the
 
 - Behind the scene, the system will create 
   - an `Order` and the `Order items` record.
-  - update the `Inventory` stock level. Note that if the inventory is **out of stock**, user will be redirected back to the homepage, currently no error message is displayed.
+  - update the `Inventory` stock level. Note that if the inventory is **out of stock**, user will be redirected back to the homepage, and the shopping cart items will be cleared from session.
   - a `Delivery` record, with a default delivery date one week later.
   - an `Invoice` record is generated, with an `ISSUED` status.
 - Orders, Invoices and Deliveries info can be access at `View Orders` link

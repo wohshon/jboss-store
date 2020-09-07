@@ -58,7 +58,7 @@
               </label>
             </div>
             <button class="btn btn-lg btn-primary btn-block" type="button" id="btn-login">Sign in</button>
-            <p class="mt-5 mb-3 text-muted">&copy; 2020-2021</p>
+            <p class="mt-5 mb-3 text-muted">&copy; 2020-2021 - v1.0</p>
           </form>        
     </div>
     <!-- jQuery -->
