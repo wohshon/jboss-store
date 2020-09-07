@@ -1,5 +1,6 @@
 package com.demo.store.web;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -20,14 +21,15 @@ import com.demo.store.entity.Cart;
 import com.demo.store.entity.CartItem;
 import com.demo.store.entity.Customer;
 import com.demo.store.entity.Delivery;
+import com.demo.store.entity.Invoice;
 import com.demo.store.entity.Order;
 import com.demo.store.entity.OrderItem;
 import com.demo.store.entity.Product;
 import com.demo.store.entity.status.OrderStatus;
 import com.demo.store.service.DataService;
-import com.demo.store.service.DeliveryBusinessService;
-import com.demo.store.service.InventoryBusinessService;
-
+import com.demo.store.service.delivery.DeliveryBusinessService;
+import com.demo.store.service.inventory.InventoryBusinessService;
+import com.demo.store.service.invoice.InvoiceBusinessService;
 import com.google.gson.Gson;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +44,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import lombok.extern.slf4j.Slf4j;
-
 
 @Slf4j
 @Controller
@@ -59,30 +60,34 @@ public class AppController {
 
     @Autowired
     DataService<Delivery> deliveryDataService;
-    
+
     @Autowired
     DeliveryBusinessService deliveryBusinessService;
 
     @Autowired
     InventoryBusinessService inventoryBusinessService;
 
+    @Autowired
+    InvoiceBusinessService invoiceBusinessService;
+
     @GetMapping("/login")
     public String login() {
-        //simple routing
+        // simple routing
         return "login";
     }
 
-    @PostMapping(path="/home",consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    //@RequestMapping(path="/home",method = {RequestMethod.POST, RequestMethod.GET}, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ModelAndView execLogin( HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+    @PostMapping(path = "/home", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    // @RequestMapping(path="/home",method = {RequestMethod.POST,
+    // RequestMethod.GET}, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ModelAndView execLogin(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 
-        log.info("user {}",request.getParameter("inputEmail"));
-        //check if customer is in db
+        log.info("user {}", request.getParameter("inputEmail"));
+        // check if customer is in db
         Customer c = new Customer();
         c.setEmail(request.getParameter("inputEmail"));
         c = customerDataService.getByEntityId(c);
         ModelAndView mv = new ModelAndView();
-        if (c!=null) {
+        if (c != null) {
             CustomerDTO cust = new CustomerDTO();
             cust.setEmail(c.getEmail());
             cust.setName(c.getName());
@@ -90,8 +95,8 @@ public class AppController {
             cust.setContactInfo(c.getContact());
             session.setAttribute("SESS_USER", cust);
             List<Product> products = productDataService.getAll();
-            session.setAttribute("SESS_PRODUCTS", products);    
-            //create new shopping cart since a login is done
+            session.setAttribute("SESS_PRODUCTS", products);
+            // create new shopping cart since a login is done
             Cart cart = new Cart();
             cart.setCustomer(c);
             session.setAttribute("SESS_CART", cart);
@@ -107,19 +112,19 @@ public class AppController {
     public String directHome() {
         return "home";
     }
-    
-    @PostMapping(path="/checkout",consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ModelAndView checkout( HttpServletRequest request, HttpServletResponse response, HttpSession session) {
-        log.info("checkout: {} {}",request.getParameter("deliveryAddress"),request.getParameter("contactInfo"));
-        Cart cart = (Cart)session.getAttribute("SESS_CART");
+
+    @PostMapping(path = "/checkout", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ModelAndView checkout(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+        log.info("checkout: {} {}", request.getParameter("deliveryAddress"), request.getParameter("contactInfo"));
+        Cart cart = (Cart) session.getAttribute("SESS_CART");
         log.info("Checking out cart with ${} for {}", cart.getTotalPrice(), session.getAttribute("SESS_USER"));
-        //call other services
-        //create Order;
+        // call other services
+        // create Order;
         Order order = new Order();
         order.setOrderDate(new Date());
         order.setTotalPrice(cart.getTotalPrice());
-        
-        //get customer from cart
+
+        // get customer from cart
         order.setCustomer(cart.getCustomer());
         order.setName(request.getParameter("orderName"));
         OrderItem orderItem = null;
@@ -143,20 +148,24 @@ public class AppController {
                 return mv;
             }
 
-
         }
         order = orderDataService.save(order);
         order = orderDataService.get(order);
 
-
-        log.info("saved Order {}",order.getName());
+        log.info("saved Order {}", order.getName());
         try {
-            Delivery del = deliveryBusinessService.raiseDeliveryRequest(order);
-            log.info("saved Delivery {}",del.getName()); //could be detached, to check
-        }   catch (Exception ex) {
+            Delivery del = new Delivery(); // place holder
+            del.setDeliveryAddress(request.getParameter("deliveryAddress"));
+            del.setContactInfo(request.getParameter("contactInfo"));
+            del = deliveryBusinessService.raiseDeliveryRequest(del, order);
+            log.info("saved Delivery {}", del.getName()); // could be detached, to check
+            Invoice inv = invoiceBusinessService.generateInvoice(order);
+            log.info("invoice generated {}", inv.getName());
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
-        //invalidate cart after services are called
+        // invalidate cart after services are called
+
         session.removeAttribute("SESS_CART");
         return mv;
     }
@@ -164,22 +173,31 @@ public class AppController {
     @GetMapping("/viewOrders")
     public ModelAndView viewOrders(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
         Customer c = new Customer();
-        c.setEmail(((CustomerDTO)session.getAttribute("SESS_USER")).getEmail());
+        c.setEmail(((CustomerDTO) session.getAttribute("SESS_USER")).getEmail());
         c = customerDataService.getByEntityId(c);
-        Object[] params = {"customer",c };
+        Object[] params = { "customer", c };
         List<Order> orders = orderDataService.query("Order.findByUsers", params);
         request.setAttribute("REQ_ORDERS", orders);
 
         Order[] orderParams = new Order[orders.size()];
         int i = 0;
         for (Order order : orders) {
-            log.info("Orders {}",order.getName());
-            orderParams[i++]= order;
+            log.info("Orders {}", order.getName());
+            orderParams[i++] = order;
         }
-        Object[] searchParams = {"deliveryOrders",Arrays.asList(orderParams)};
+        Object[] searchParams = { "deliveryOrders", Arrays.asList(orderParams) };
         List<Delivery> deliveries = deliveryDataService.query("Delivery.findByOrder", searchParams);
         log.info("deliveries based on orders {}", deliveries);
         request.setAttribute("REQ_DELVS", deliveries);
+        List<Invoice> invoices = new ArrayList<Invoice>();
+        try {
+            invoices = invoiceBusinessService.getInvoicesByOrder(orders);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        log.info("invoice based on orders {}", invoices);
+        request.setAttribute("REQ_INVOICES", invoices);
+
         ModelAndView mv = new ModelAndView("viewOrders");
         return mv;
     }

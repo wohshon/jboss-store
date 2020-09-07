@@ -6,6 +6,7 @@
    
 <c:set var="ORDERS" value="${requestScope.REQ_ORDERS}"/>
 <c:set var="DELIVERIES" value="${requestScope.REQ_DELVS}"/>
+<c:set var="INVOICES" value="${requestScope.REQ_INVOICES}"/>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
@@ -99,7 +100,7 @@
         <div class="col col-1 bg-dark text-white">
             #
         </div>
-        <div class="col col-4 bg-dark text-white">
+        <div class="col col-6 bg-dark text-white">
             Deliveries for Orders
         </div>
         <div class="col col-3 bg-dark text-white">
@@ -107,10 +108,7 @@
         </div>
         <div class="col col-2 bg-dark text-white">
             Status
-        </div>
-        <div class="col col-2 bg-dark text-white">
-            Recipient
-        </div>          
+        </div>        
     </div>    
     <c:forEach items="${DELIVERIES}" var="delivery">
         <div class="row">
@@ -118,8 +116,19 @@
                 <c:set var="count1" value="${count1 + 1}" scope="page"/>
                 <c:out value = "${count1}"/>                    
             </div>
-            <div class="col col-4">
-                ${delivery.order.name}
+            <div class="col col-6">
+                <div class="row">
+                    ${delivery.order.name}
+                </div>
+                <div class="row">
+                    ${delivery.order.customer.name}
+                </div>
+                <div class="row">
+                    ${delivery.deliveryAddress}
+                </div>
+                <div class="row">
+                    ${delivery.contactInfo}
+                </div>                
             </div>
             <div class="col col-3">
                 ${delivery.deliveryDate}
@@ -127,14 +136,47 @@
             <div class="col col-2">
                 ${delivery.status}
             </div>
-            <div class="col col-2">
-                ${delivery.order.customer.name}
-            </div>
         </div>            
 
 
     </c:forEach>    
     
+
+    <c:set var="count2" value="0" scope="page" />
+    <div class="row">
+        <div class="col col-1 bg-dark text-white">
+            #
+        </div>
+        <div class="col col-5 bg-dark text-white">
+            Invoices for Orders
+        </div>
+        <div class="col col-4 bg-dark text-white">
+            Invoice Date
+        </div>
+        <div class="col col-2 bg-dark text-white">
+            Status
+        </div>
+    </div>    
+    <c:forEach items="${INVOICES}" var="invoice">
+        <div class="row">
+            <div class="col col-1">
+                <c:set var="count2" value="${count2 + 1}" scope="page"/>
+                <c:out value = "${count2}"/>                    
+            </div>
+            <div class="col col-5">
+                ${invoice.order.name}
+            </div>
+            <div class="col col-4">
+                ${invoice.invoiceDate}
+            </div>
+            <div class="col col-2">
+                ${invoice.status}
+            </div>
+        </div>            
+
+
+    </c:forEach>    
+
     </div>
     <!--end main container-->
     <!-- jQuery -->

@@ -1,4 +1,4 @@
-package com.demo.store.service;
+package com.demo.store.service.delivery;
 
 import javax.transaction.Transactional;
 
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 public interface DeliveryBusinessService {
     
-    public Delivery raiseDeliveryRequest(Order order) throws Exception;
+    public Delivery raiseDeliveryRequest(Delivery delivery, Order order) throws Exception;
 
     public Delivery updateDelivery(Delivery delivery) throws Exception;
 }

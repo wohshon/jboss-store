@@ -63,20 +63,23 @@ The system does not check for any passwords, but will load the user based on the
 
 ![store checkout ](doc-img/store-checkout.png)
 
-- The delivery address and contact info will be pulled from the user database and pre populated in the form.
+- The delivery address and contact info will be pulled from the user database and pre populated in the form. Changes made on this form will be reflected on the delivery info and not on the Customer info.
 - An order name can be entered to help differentiate different orders.
+- The Credit card and expiry date info are not captured currently.
 - Click on `Confirm Checkout` to submit the order
 
 
-#### 4. Orders and Deliveries
+#### 4. Orders, Deliveries and Invoices
 
 ![store confirmed ](doc-img/store-confirmed.png)
 
 - Behind the scene, the system will create 
-  - an `order` and `order items` record.
-  - update the `inventory`. Note that if the inventory is **out of stock**, user will be redirected back to the homepage, currently no error message is displayed.
-  - a `delivery` record, with a default delivery date one week later.
-- Orders and Deliveries info can be access at `View Orders` link
+  - an `Order` and the `Order items` record.
+  - update the `Inventory` stock level. Note that if the inventory is **out of stock**, user will be redirected back to the homepage, currently no error message is displayed.
+  - a `Delivery` record, with a default delivery date one week later.
+  - an `Invoice` record is generated, with an `ISSUED` status.
+- Orders, Invoices and Deliveries info can be access at `View Orders` link
+
 
 ![store view orders and deliveries ](doc-img/store-view-orders-deliveries.png)
 

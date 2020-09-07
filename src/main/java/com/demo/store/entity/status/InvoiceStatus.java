@@ -6,7 +6,7 @@ public enum InvoiceStatus {
     @SerializedName("NEW")
     NEW("New"),
     @SerializedName("ISSUED")
-    PAID("ISSUED"),
+    ISSUED("ISSUED"),
     @SerializedName("Cancelled")
     CANCELLED("Cancelled");
 

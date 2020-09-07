@@ -121,12 +121,26 @@
                 <div class="col" style="display: none;" id="checkOutSection">
                     <form class="form-checkout" id="checkoutForm" method="POST">
                         <h1 class="h6 mb-3 font-weight-normal">Hi ${sessionScope.SESS_USER.name}, Please Enter a Order Name for reference, and your  Delivery and Contact Information to confirm order</h1>
+                        <div class = "row text-black"> Order Name </div>
                         <label for="orderName" class="sr-only">Order Name</label>
                         <input type="text" name="orderName" id="orderName" class="form-control" placeholder="Contact Info" required value="Order for - ${sessionScope.SESS_USER.name}">
+
+                        <div class = "row text-black"> Delivery Address </div>                        
                         <label for="deliveryAddress" class="sr-only" aria-disabled="true">Delivery Address</label>
                         <input type="text" name="deliveryAddress" id="deliveryAddress" class="form-control" placeholder="Delivery Address" required autofocus value="${sessionScope.SESS_USER.deliveryAddress}" >
+
+                        <div class = "row text-black"> Contact Info </div>
                         <label for="contactInfo" class="sr-only">Contact Info</label>
                         <input type="text" name="contactInfo" id="contactInfo" class="form-control" placeholder="Contact Info" required value="${sessionScope.SESS_USER.contactInfo}">
+
+                        <div class = "row text-black"> Credit Card Number </div>
+                        <label for="ccNumber" class="sr-only">Credit Card Number</label>
+                        <input type="text" name="ccNumber" id="ccNumber" class="form-control" placeholder="Credit Card Number" required value="1234-5678-1234-5678">
+
+                        <div class = "row text-black"> Card Expiry </div>
+                        <label for="ccExpiry" class="sr-only"> Card Expiry </label>
+                        <input type="text" name="ccExpiry" id="ccExpiry" class="form-control" placeholder=" Card Expiry " required value="12/26">
+                        
                         <button class="btn btn-sm btn-primary btn-block" type="button" id="btn-confirm-checkout">Confirm Checkout</button>                        
                     </form>        
                 </div>

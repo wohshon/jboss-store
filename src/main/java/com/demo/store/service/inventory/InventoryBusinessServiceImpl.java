@@ -1,7 +1,8 @@
-package com.demo.store.service;
+package com.demo.store.service.inventory;
 
 import com.demo.store.entity.Inventory;
 import com.demo.store.entity.OrderItem;
+import com.demo.store.service.DataService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

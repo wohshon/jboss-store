@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName;
 public enum DeliveryStatus {
     @SerializedName("NEW")
     NEW("New"),
+    @SerializedName("PROCESSING")
+    PROCESSING("Processing"),
     @SerializedName("DELIVERED")
     DELIVERED("Delivered"),
     @SerializedName("Cancelled")

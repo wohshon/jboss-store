@@ -1,9 +1,11 @@
-package com.demo.store.service;
+package com.demo.store.service.delivery;
 
 import java.util.Calendar;
 
 import com.demo.store.entity.Delivery;
 import com.demo.store.entity.Order;
+import com.demo.store.entity.status.DeliveryStatus;
+import com.demo.store.service.DataService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,10 +15,13 @@ public class DeliveryBusinessServiceImpl implements DeliveryBusinessService {
     @Autowired
     DataService<Delivery> deliveryDataService;
     @Override
-    public Delivery raiseDeliveryRequest(Order order) throws Exception {
+    public Delivery raiseDeliveryRequest(Delivery delivery,Order order) throws Exception {
         Delivery del = new Delivery();
         del.setOrder(order);
         del.setName(order.getName());
+        del.setContactInfo(delivery.getContactInfo());
+        del.setDeliveryAddress(delivery.getDeliveryAddress());
+        del.setStatus(DeliveryStatus.PROCESSING);
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.WEEK_OF_MONTH, 1);
         del.setDeliveryDate(cal.getTime());

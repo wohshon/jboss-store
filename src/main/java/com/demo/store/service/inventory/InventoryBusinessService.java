@@ -1,4 +1,4 @@
-package com.demo.store.service;
+package com.demo.store.service.inventory;
 
 import javax.transaction.Transactional;
 

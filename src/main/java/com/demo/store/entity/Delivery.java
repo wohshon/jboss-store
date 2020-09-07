@@ -45,6 +45,10 @@ public class Delivery extends AbstractGeneratedIdEntity{
     
     @Column(name="status")
     private DeliveryStatus status = DeliveryStatus.NEW;
+    @Column(name = "address")
+    private String deliveryAddress;
+    @Column(name = "contact")
+    private String contactInfo;
 	@Override
 	public Long getId() {
 		return id;
