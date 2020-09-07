@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class InventoryBusinessServiceImpl implements InventoryBusinessService{
     @Autowired
-    DataService<Inventory> inventoryService;
+    DataService<Inventory> inventoryDataService;
     
     @Override
     public void updateInventory(OrderItem orderItem) throws Exception {
@@ -20,14 +20,14 @@ public class InventoryBusinessServiceImpl implements InventoryBusinessService{
         log.info("Inside Inventory ,order {}", orderItem.getItem().getName());
         
         Object[] params = {"product", orderItem.getItem()};        
-        Inventory inv = inventoryService.query("Inventory.findByProduct", params).get(0); // dirty hack
+        Inventory inv = inventoryDataService.query("Inventory.findByProduct", params).get(0); // dirty hack
         log.info("inv {} {}", inv.getName(), inv.getStock());
         Integer i = inv.getStock() - orderItem.getQty();
         if (i < 0) {
             throw new Exception("Not enough Stock");
         }
         inv.setStock(inv.getStock() - orderItem.getQty());
-        inventoryService.update(inv);
+        inventoryDataService.update(inv);
 
     }
     @Override

@@ -18,6 +18,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.demo.store.entity.status.OrderStatus;
+
 import lombok.Data;
 
 @Entity
@@ -44,7 +46,7 @@ public class Order extends AbstractGeneratedIdEntity {
 	@Column(name="totalPrice")
 	private Double totalPrice;
 	@Column(name = "status")
-	private String status="NEW";
+	private OrderStatus status=OrderStatus.NEW;
 	@ManyToOne
 	@JoinColumn(name="customer", referencedColumnName="email",updatable=false)
 	//@Transient 

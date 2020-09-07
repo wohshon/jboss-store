@@ -15,6 +15,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.demo.store.entity.status.DeliveryStatus;
+
 import lombok.Data;
 
 @Entity
@@ -42,6 +44,9 @@ public class Delivery extends AbstractGeneratedIdEntity{
     private Date deliveryDate;
     
     @Column(name="status")
-    private String status = "NEW";
-
+    private DeliveryStatus status = DeliveryStatus.NEW;
+	@Override
+	public Long getId() {
+		return id;
+	}
 }

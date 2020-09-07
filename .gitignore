@@ -1,3 +1,5 @@
 src/main/resources/META-INF/persistence.xml_disabled
 /target/
+.settings/**
+.vscode/**
 .*

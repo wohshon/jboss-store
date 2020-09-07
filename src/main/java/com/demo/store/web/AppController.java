@@ -20,15 +20,14 @@ import com.demo.store.entity.Cart;
 import com.demo.store.entity.CartItem;
 import com.demo.store.entity.Customer;
 import com.demo.store.entity.Delivery;
-import com.demo.store.entity.Inventory;
 import com.demo.store.entity.Order;
 import com.demo.store.entity.OrderItem;
 import com.demo.store.entity.Product;
+import com.demo.store.entity.status.OrderStatus;
 import com.demo.store.service.DataService;
-import com.demo.store.service.DeliveryService;
+import com.demo.store.service.DeliveryBusinessService;
 import com.demo.store.service.InventoryBusinessService;
-import com.demo.store.service.InventoryService;
-import com.demo.store.service.ProductService;
+
 import com.google.gson.Gson;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,16 +49,20 @@ import lombok.extern.slf4j.Slf4j;
 public class AppController {
 
     @Autowired
-    DataService<Product> productService;
+    DataService<Product> productDataService;
 
     @Autowired
-    DataService<Order> orderService;
+    DataService<Order> orderDataService;
 
     @Autowired
-    DataService<Customer> customerService;
+    DataService<Customer> customerDataService;
 
     @Autowired
-    DataService<Delivery> deliveryService;
+    DataService<Delivery> deliveryDataService;
+    
+    @Autowired
+    DeliveryBusinessService deliveryBusinessService;
+
     @Autowired
     InventoryBusinessService inventoryBusinessService;
 
@@ -77,7 +80,7 @@ public class AppController {
         //check if customer is in db
         Customer c = new Customer();
         c.setEmail(request.getParameter("inputEmail"));
-        c = customerService.getByEntityId(c);
+        c = customerDataService.getByEntityId(c);
         ModelAndView mv = new ModelAndView();
         if (c!=null) {
             CustomerDTO cust = new CustomerDTO();
@@ -86,7 +89,7 @@ public class AppController {
             cust.setDeliveryAddress(c.getAddress());
             cust.setContactInfo(c.getContact());
             session.setAttribute("SESS_USER", cust);
-            List<Product> products = productService.getAll();
+            List<Product> products = productDataService.getAll();
             session.setAttribute("SESS_PRODUCTS", products);    
             //create new shopping cart since a login is done
             Cart cart = new Cart();
@@ -131,7 +134,7 @@ public class AppController {
             orderItem.setOrder(order);
             order.getItems().add(orderItem);
             try {
-            inventoryBusinessService.updateInventory(orderItem);
+                inventoryBusinessService.updateInventory(orderItem);
             } catch (Exception e) {
                 // should be not enough stock , //TODO, write a custom exception
                 log.info("caucht exception when updating inventory");
@@ -139,21 +142,20 @@ public class AppController {
                 mv.setViewName("home");
                 return mv;
             }
-            //create Delivery Service
+
 
         }
-        order = orderService.save(order);
-        order = orderService.get(order);
-        Delivery del = new Delivery();
-        del.setOrder(order);
-        del.setName(order.getName());
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.WEEK_OF_MONTH, 1);
-        del.setDeliveryDate(cal.getTime());
-        deliveryService.save(del);
+        order = orderDataService.save(order);
+        order = orderDataService.get(order);
+
 
         log.info("saved Order {}",order.getName());
-        log.info("saved Delivery {}",del.getName());
+        try {
+            Delivery del = deliveryBusinessService.raiseDeliveryRequest(order);
+            log.info("saved Delivery {}",del.getName()); //could be detached, to check
+        }   catch (Exception ex) {
+            ex.printStackTrace();
+        }
         //invalidate cart after services are called
         session.removeAttribute("SESS_CART");
         return mv;
@@ -163,9 +165,9 @@ public class AppController {
     public ModelAndView viewOrders(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
         Customer c = new Customer();
         c.setEmail(((CustomerDTO)session.getAttribute("SESS_USER")).getEmail());
-        c = customerService.getByEntityId(c);
+        c = customerDataService.getByEntityId(c);
         Object[] params = {"customer",c };
-        List<Order> orders = orderService.query("Order.findByUsers", params);
+        List<Order> orders = orderDataService.query("Order.findByUsers", params);
         request.setAttribute("REQ_ORDERS", orders);
 
         Order[] orderParams = new Order[orders.size()];
@@ -175,7 +177,7 @@ public class AppController {
             orderParams[i++]= order;
         }
         Object[] searchParams = {"deliveryOrders",Arrays.asList(orderParams)};
-        List<Delivery> deliveries = deliveryService.query("Delivery.findByOrder", searchParams);
+        List<Delivery> deliveries = deliveryDataService.query("Delivery.findByOrder", searchParams);
         log.info("deliveries based on orders {}", deliveries);
         request.setAttribute("REQ_DELVS", deliveries);
         ModelAndView mv = new ModelAndView("viewOrders");
@@ -191,7 +193,7 @@ public class AppController {
             Cart cart = new Cart();
             Customer c = new Customer();
             c.setEmail(((CustomerDTO)session.getAttribute("SESS_USER")).getEmail());
-            c = customerService.getByEntityId(c);
+            c = customerDataService.getByEntityId(c);
             cart.setCustomer(c);
             session.setAttribute("SESS_CART", cart);
             
@@ -210,7 +212,7 @@ public class AppController {
                 p.setProductId(cartItemDTO.getProduct().getProductId());
                 cartItem.setProductId(p.getProductId());
                 cartItem.setQty(cartItemDTO.getQty());
-                cartItem.setItem(productService.getByEntityId(p));
+                cartItem.setItem(productDataService.getByEntityId(p));
                 cart.addItem(cartItem);
 
             }
@@ -232,7 +234,7 @@ public class AppController {
             Cart cart = new Cart();
             Customer c = new Customer();
             c.setEmail(((CustomerDTO)session.getAttribute("SESS_USER")).getEmail());
-            c = customerService.getByEntityId(c);
+            c = customerDataService.getByEntityId(c);
             cart.setCustomer(c);
             session.setAttribute("SESS_CART", cart);
                         
@@ -246,60 +248,60 @@ public class AppController {
         
         Customer c = new Customer();
         c.setEmail("johnd@gmail.com");
-        c = customerService.getByEntityId(c);
+        c = customerDataService.getByEntityId(c);
         OrderItem i1 = new OrderItem();
         i1.setQty(1000);
         Product p1 = new Product();
         p1.setProductId("p0001");
-        i1.setItem(productService.getByEntityId(p1));
+        i1.setItem(productDataService.getByEntityId(p1));
         i1.setName(i1.getItem().getName());
 
         OrderItem i2 = new OrderItem();
         i2.setQty(1000);
         Product p4 = new Product();
         p4.setProductId("p0004");
-        i2.setItem(productService.getByEntityId(p4));
+        i2.setItem(productDataService.getByEntityId(p4));
         i2.setName(i2.getItem().getName());
         
         Order o = new Order();
         o.setName("Order 1");
         o.setCustomer(c);
-        o.setStatus("NEW");
+        o.setStatus(OrderStatus.NEW);
         o.setOrderDate(new Date());
         i1.setOrder(o);
         i2.setOrder(o);
         o.getItems().add(i1);
         o.getItems().add(i2);
-        orderService.save(o);
+        orderDataService.save(o);
 
         //======================
          i1 = new OrderItem();
         i1.setQty(1000);
          p1 = new Product();
         p1.setProductId("p0001");
-        i1.setItem(productService.getByEntityId(p1));
+        i1.setItem(productDataService.getByEntityId(p1));
         i1.setName(i1.getItem().getName());
 
          i2 = new OrderItem();
         i2.setQty(1000);
          p4 = new Product();
         p4.setProductId("p0004");
-        i2.setItem(productService.getByEntityId(p4));
+        i2.setItem(productDataService.getByEntityId(p4));
         i2.setName(i2.getItem().getName());
         
          o = new Order();
         o.setName("Order 2");
-        o.setStatus("NEW");
+        o.setStatus(OrderStatus.NEW);
         o.setCustomer(c);
         o.setOrderDate(new Date());
         i1.setOrder(o);
         i2.setOrder(o);
         o.getItems().add(i1);
         o.getItems().add(i2);
-        orderService.save(o); 
+        orderDataService.save(o); 
 
         //get orders to test
-        List<Order> list = orderService.getAll();
+        List<Order> list = orderDataService.getAll();
         for (Order order : list) {
             log.info("Order {} {} {}", order.getName(), order.getId(),order.getItems().size());
             for (OrderItem orderItem : order.getItems()) {
@@ -313,45 +315,45 @@ public class AppController {
 
     @GetMapping("/test-product")
     public String testProduct (HttpServletRequest request, HttpServletResponse response, HttpSession session) {
-        List<Product> products = productService.getAll();
+        List<Product> products = productDataService.getAll();
         log.info("products size : {}",products.size());
 
         Product p = new Product();
         p.setId(4L);
        //p.setProductId("p0004");
-        p = productService.get(p);
+        p = productDataService.get(p);
         log.info("product : {} {}",p.getId(), p.getName());
         p = new Product();
         p.setProductId("p0001");
-        p = productService.getByEntityId(p);
+        p = productDataService.getByEntityId(p);
         log.info("product by productId: {} {}",p.getId(), p.getName());
         
         
-        p = productService.get(products.get(0));
+        p = productDataService.get(products.get(0));
         log.info("products by id : {} {}", p.getName(),p.getClass());
         p.setName("changed");
-        productService.update(p);
+        productDataService.update(p);
 
         p = new Product();
         p.setDescription("hello");
         p.setName("Newbie");
-        productService.save(p);
+        productDataService.save(p);
 
         //p = new Product();
         //p.setId(3L);
-        //productService.remove(p);
+        //productDataService.remove(p);
         p = new Product();
 
         p.setId(4L);
-         p = productService.get(p);
+         p = productDataService.get(p);
          log.info("products by id again: {} {}", p.getName(),p.getClass());
         //String[] params = {"name", "Tux Doll"};
-        //List<Product> results = productService.query("Product.findByName", (Object[])params); 
+        //List<Product> results = productDataService.query("Product.findByName", (Object[])params); 
         //log.info("products by name: {} {} ", results.size(), results.get(0)!=null?results.get(0).getName():"No result");
 
         String[] sarray = {"p0001","p0003"};
         Object[] params = {"ids", sarray };
-        List<Product> results = productService.query("Product.findByProducts", params); 
+        List<Product> results = productDataService.query("Product.findByProducts", params); 
         log.info("products by name: {} {} ", results.size(), results.get(0)!=null?results.get(0).getName():"No result");
         return "test";
     }

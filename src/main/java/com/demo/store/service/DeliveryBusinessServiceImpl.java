@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class DeliveryBusinessServiceImpl implements DeliveryBusinessService {
     @Autowired
-    DataService<Delivery> deliveryService;
+    DataService<Delivery> deliveryDataService;
     @Override
     public Delivery raiseDeliveryRequest(Order order) throws Exception {
         Delivery del = new Delivery();
@@ -20,7 +20,7 @@ public class DeliveryBusinessServiceImpl implements DeliveryBusinessService {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.WEEK_OF_MONTH, 1);
         del.setDeliveryDate(cal.getTime());
-        deliveryService.save(del);        
+        deliveryDataService.save(del);        
         
         /**Simulate calling a external vendor to arrange for delivery 
          * can be a queue, or rest api and can set the status of the delivery accordingly
@@ -28,7 +28,7 @@ public class DeliveryBusinessServiceImpl implements DeliveryBusinessService {
         return del;
     }
     @Override
-    public Delivery updatDelivery() {
+    public Delivery updateDelivery(Delivery delivery) throws Exception {
         // TODO Auto-generated method stub
         return null;
     }

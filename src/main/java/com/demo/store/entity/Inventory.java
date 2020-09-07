@@ -36,5 +36,8 @@ public class Inventory extends AbstractGeneratedIdEntity{
     @Column(name="uom")
     private String uom;
 
-    
+    @Override
+	public Long getId() {
+		return id;
+	}
 }

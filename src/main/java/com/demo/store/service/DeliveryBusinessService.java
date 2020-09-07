@@ -13,5 +13,5 @@ public interface DeliveryBusinessService {
     
     public Delivery raiseDeliveryRequest(Order order) throws Exception;
 
-    public Delivery updatDelivery(Delivery) throws Exception;
+    public Delivery updateDelivery(Delivery delivery) throws Exception;
 }
