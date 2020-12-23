@@ -107,7 +107,7 @@
 <dependency>
     <groupId>org.hibernate.validator</groupId>
     <artifactId>hibernate-validator</artifactId>
-    <version>6.1.2.Final-redhat-00004</version>
+    <version>6.1.5.Final-redhat-00001</version>
 </dependency>
 
 <dependency>
