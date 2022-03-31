@@ -38,7 +38,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <version.jboss.bom.eap>7.2.0.GA</version.jboss.bom.eap>
         <version.javaee.spec>1.0.4.Final-redhat-00001</version.javaee.spec>
-        <version.spring-webmvc>5.2.8.RELEASE</version.spring-webmvc>
+        <version.spring-webmvc>5.3.18</version.spring-webmvc>
         <version.war.plugin>3.3.1</version.war.plugin>
         <version.hibernate>5.4.21.Final</version.hibernate>
   </properties>
